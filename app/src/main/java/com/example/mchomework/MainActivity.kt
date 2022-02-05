@@ -1,5 +1,7 @@
 package com.example.mchomework
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,8 +23,13 @@ class MainActivity : ComponentActivity() {
                     Greeting("Android")
                 }
             }
-
              */
+            val sharedPref = getPreferences(Context.MODE_PRIVATE)
+            with (sharedPref.edit()) {
+                putString("username", "student")
+                putString("password", "abc123")
+                apply()
+            }
             Login()
         }
     }
