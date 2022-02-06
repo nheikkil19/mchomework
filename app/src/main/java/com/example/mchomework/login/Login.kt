@@ -15,10 +15,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable()
-fun Login() {
+fun Login(navController: NavController) {
     var username = rememberSaveable{ mutableStateOf("") }
     var password = rememberSaveable{ mutableStateOf("") }
 

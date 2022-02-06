@@ -17,20 +17,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            /*MchomeworkTheme {
+            MchomeworkTheme {
+                val sharedPref = getPreferences(Context.MODE_PRIVATE)
+                with(sharedPref.edit()) {
+                    putString("username", "student")
+                    putString("password", "abc123")
+                    apply()
+                }
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    ReminderApp()
                 }
             }
-             */
-            val sharedPref = getPreferences(Context.MODE_PRIVATE)
-            with (sharedPref.edit()) {
-                putString("username", "student")
-                putString("password", "abc123")
-                apply()
-            }
-            Login()
         }
     }
 }
