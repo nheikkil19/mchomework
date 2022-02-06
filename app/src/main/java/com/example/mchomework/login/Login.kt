@@ -1,6 +1,5 @@
 package com.example.mchomework.login
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,10 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mchomework.MainActivity.*
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable()
@@ -41,7 +38,7 @@ fun Login(
                 imageVector = Icons.Rounded.AccountBox,
                 contentDescription = "Account",
                 modifier = Modifier.size(180.dp),
-                tint = Color.Cyan
+                tint = Color.White
             )
             Spacer(modifier = Modifier.size(4.dp))
             Text(text = "Username", modifier = Modifier.fillMaxWidth())
@@ -64,10 +61,17 @@ fun Login(
                     keyboardType = KeyboardType.Password
                 )
             )
-            Spacer(modifier = Modifier.size(4.dp))
+            Spacer(modifier = Modifier.size(8.dp))
             Button(
-                onClick = { onLoginButtonClick(navController, sharedPref, username.value, password.value) },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { onLoginButtonClick(
+                    navController,
+                    sharedPref,
+                    username.value,
+                    password.value
+                ) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
             ) {
                 Text(text = "Login")
             }
