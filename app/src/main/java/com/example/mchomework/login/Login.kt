@@ -2,9 +2,7 @@ package com.example.mchomework.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountBox
 import androidx.compose.runtime.Composable
@@ -39,6 +37,8 @@ fun Login() {
                 modifier = Modifier.size(180.dp),
                 tint = Color.Cyan
             )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(text = "Username", modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
                 value = username.value,
                 onValueChange = { data -> username.value = data },
@@ -47,7 +47,8 @@ fun Login() {
                 keyboardType = KeyboardType.Text
                 )
             )
-
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(text = "Password", modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { data -> password.value = data },
@@ -57,6 +58,13 @@ fun Login() {
                     keyboardType = KeyboardType.Password
                 )
             )
+            Spacer(modifier = Modifier.size(4.dp))
+            Button(
+                onClick = { /*goto homescreen*/},
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Login")
+            }
 
         }
     }
