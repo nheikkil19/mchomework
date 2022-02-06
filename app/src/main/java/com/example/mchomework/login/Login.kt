@@ -61,7 +61,7 @@ fun Login(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(4.dp))
             Button(
-                onClick = { /*goto homescreen*/},
+                onClick = { navController.navigate("home") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Login")
