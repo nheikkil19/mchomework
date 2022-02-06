@@ -1,5 +1,7 @@
 package com.example.mchomework.login
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -16,12 +18,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mchomework.MainActivity.*
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable()
-fun Login(navController: NavController) {
-    var username = rememberSaveable{ mutableStateOf("") }
-    var password = rememberSaveable{ mutableStateOf("") }
+fun Login(
+    sharedPref: SharedPreferences,
+    navController: NavController) {
+    val username = rememberSaveable{ mutableStateOf("") }
+    val password = rememberSaveable{ mutableStateOf("") }
 
     Surface( modifier = Modifier.fillMaxSize()) {
         Column(
@@ -61,13 +66,23 @@ fun Login(navController: NavController) {
             )
             Spacer(modifier = Modifier.size(4.dp))
             Button(
-                onClick = { navController.navigate("home") },
+                onClick = { onLoginButtonClick(navController, sharedPref, username.value, password.value) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Login")
             }
-
         }
     }
 }
 
+fun onLoginButtonClick(
+    navController: NavController,
+    sharedPref: SharedPreferences,
+    username: String,
+    password: String
+) {
+    if ( username == sharedPref.getString("username", null) &&
+         password == sharedPref.getString("password", null) ) {
+        navController.navigate("home")
+    }
+}
