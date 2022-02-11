@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -15,6 +16,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import com.example.mchomework.data.Reminder
+import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun Home(navController: NavController) {
@@ -23,7 +25,7 @@ fun Home(navController: NavController) {
             modifier = Modifier.padding(bottom = 30.dp),
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate("addReminder") },
                     modifier = Modifier.padding(all = 20.dp)
                 ) {
                     Icon(
@@ -33,7 +35,13 @@ fun Home(navController: NavController) {
                 }
             }
         ) {
-            Column() {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .systemBarsPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Button(
                     onClick = { navController.navigate("login") },
                     modifier = Modifier.fillMaxWidth()
@@ -81,7 +89,7 @@ fun reminderList() {
 private fun ReminderItem(
     reminder: Reminder
 ) {
-    ConstraintLayout(modifier = Modifier.clickable {}) {
+    ConstraintLayout(modifier = Modifier.clickable { /*editReminder(reminder)*/ }) {
         val (divider, reminderTitle, reminderTime) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {

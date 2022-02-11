@@ -15,8 +15,8 @@ class MainActivity : ComponentActivity() {
             MchomeworkTheme {
                 val sharedPref = getPreferences(Context.MODE_PRIVATE)
                 with(sharedPref.edit()) {
-                    putString("username", "user")
-                    putString("password", "pass")
+                    putString("username", "") //user
+                    putString("password", "") //pass
                     apply()
                     }
                 // A surface container using the 'background' color from the theme
