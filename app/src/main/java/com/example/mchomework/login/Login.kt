@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 
-@Composable()
+@Composable
 fun Login(
     sharedPref: SharedPreferences,
     navController: NavController) {
