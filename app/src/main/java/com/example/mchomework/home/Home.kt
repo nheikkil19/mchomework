@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,8 +16,16 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
+import com.example.mchomework.Graph.database
+import com.example.mchomework.Graph.reminderRepository
+import com.example.mchomework.data.MyDatabase
 import com.example.mchomework.data.Reminder
+import com.example.mchomework.data.ReminderDao
 import com.google.accompanist.insets.systemBarsPadding
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun Home(navController: NavController) {
@@ -56,33 +65,29 @@ fun Home(navController: NavController) {
 
 @Composable
 fun reminderList() {
+    val coroutineScope = rememberCoroutineScope()
     val list: List<Reminder> = listOf(
-        Reminder("eat food", "23.11.2020"),
-        Reminder("goto sleep", "24.5.2020"),
-        Reminder("drink coffee", "25.10.2020"),
-        Reminder("exercise", "13.10.2020"),
-        Reminder("goto work", "1.9.2020"),
-        Reminder("goto school", "4.5.2020"),
-
-        Reminder("eat food", "23.11.2020"),
-        Reminder("goto sleep", "24.5.2020"),
-        Reminder("drink coffee", "25.10.2020"),
-        Reminder("exercise", "13.10.2020"),
-        Reminder("goto work", "1.9.2020"),
-        Reminder("goto school", "4.5.2020"),
-
-        Reminder("eat food", "23.11.2020"),
-        Reminder("goto sleep", "24.5.2020"),
-        Reminder("drink coffee", "25.10.2020"),
-        Reminder("exercise", "13.10.2020"),
-        Reminder("goto work", "1.9.2020"),
-        Reminder("goto school", "4.5.2020")
+        Reminder(
+            message = "eat food",
+            reminder_time = Date().time,
+            creation_time = Date().time,
+            creator_id = 1,
+            reminder_seen = false
+        )
     )
+
+    for (item: Reminder in list) {
+        coroutineScope.launch { reminderRepository.addReminder(item) }
+
+    }
+    /*
     LazyColumn() {
         items(list) { item ->
             ReminderItem(item)
         }
     }
+
+     */
 }
 
 @Composable
@@ -99,7 +104,7 @@ private fun ReminderItem(
             }
         )
         Text(
-            text = reminder.title,
+            text = reminder.message,
             maxLines = 1,
             modifier = Modifier.constrainAs(reminderTitle) {
                 top.linkTo(parent.top, 20.dp)
@@ -108,7 +113,7 @@ private fun ReminderItem(
             }
         )
         Text(
-            text = reminder.time,
+            text = reminder.reminder_time.toDateString(),
             maxLines = 1,
             modifier = Modifier.constrainAs(reminderTime) {
                 top.linkTo(parent.top, 20.dp)
@@ -117,4 +122,8 @@ private fun ReminderItem(
             }
         )
     }
+}
+
+private fun Long.toDateString(): String {
+    return SimpleDateFormat("dd.MM.yyyy").format(this)
 }
