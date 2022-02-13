@@ -20,7 +20,7 @@ fun ReminderApp(
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = "home"
+        startDestination = "login"
     ) {
         composable(route = "login") {
             Login(sharedPref, navController = appState.navController)
@@ -31,7 +31,7 @@ fun ReminderApp(
         composable(route = "addReminder") {
             Reminder(navController = appState.navController, edit = false)
         }
-       composable(route = "editReminder{id}",
+        composable(route = "editReminder{id}",
             arguments = listOf(navArgument("id") {
                type = NavType.IntType
                defaultValue = 0

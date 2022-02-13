@@ -18,8 +18,8 @@ class MainActivity : ComponentActivity() {
             MchomeworkTheme {
                 val sharedPref = getPreferences(Context.MODE_PRIVATE)
                 with(sharedPref.edit()) {
-                    putString("username", "") //user
-                    putString("password", "") //pass
+                    putString("username", "user") //user
+                    putString("password", "pass") //pass
                     apply()
                     }
 

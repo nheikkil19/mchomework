@@ -136,5 +136,5 @@ private fun ReminderItem(
 }
 
 private fun Long.toDateString(): String {
-    return SimpleDateFormat("hh:mm dd.MM.yyyy").format(this)
+    return SimpleDateFormat("hh:mm dd.MM.yyyy", Locale.getDefault()).format(this)
 }
