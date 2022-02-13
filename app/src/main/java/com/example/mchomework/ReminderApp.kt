@@ -11,11 +11,12 @@ import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.home.Home
 import com.example.mchomework.login.Login
 import com.example.mchomework.reminder.Reminder
+import com.google.android.gms.location.FusedLocationProviderClient
 
 @Composable
 fun ReminderApp(
     sharedPref: SharedPreferences,
-    appState: ReminderAppState = rememberReminderAppState()
+    appState: ReminderAppState = rememberReminderAppState(),
 ) {
     NavHost(
         navController = appState.navController,

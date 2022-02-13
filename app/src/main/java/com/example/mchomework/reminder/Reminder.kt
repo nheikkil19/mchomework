@@ -1,5 +1,9 @@
 package com.example.mchomework.reminder
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.Location
 import android.util.Log
 import android.widget.Space
 import androidx.compose.foundation.layout.*
@@ -17,14 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mchomework.data.entity.Reminder
-import kotlinx.coroutines.coroutineScope
+import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.time.hours
 
+@SuppressLint("MissingPermission")
 @Composable
 fun Reminder(
     navController: NavController,
@@ -42,12 +45,12 @@ fun Reminder(
     val hour = rememberSaveable { mutableStateOf("") }
     val min = rememberSaveable { mutableStateOf("") }
 
+
     if (edit) {
         runBlocking {
             buttonText = "Apply changes"
             val reminder = reminderId?.let { viewModel.getReminder(it) }
             val cal = Calendar.getInstance()
-            Log.d("myTag", "plz work")
             if (reminder != null) {
                 cal.time = Date(reminder.reminder_time)
                 message.value = reminder.message
@@ -178,6 +181,8 @@ fun Reminder(
                                         month.value,
                                         year.value
                                     ),
+                                    location_x = 0.0,
+                                    location_y = 0.0,
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false
@@ -196,6 +201,8 @@ fun Reminder(
                                         month.value,
                                         year.value
                                     ),
+                                    location_x = 0.0,
+                                    location_y = 0.0,
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false
