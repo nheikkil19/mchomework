@@ -2,8 +2,8 @@ package com.example.mchomework
 
 import android.content.Context
 import androidx.room.Room
-import com.example.mchomework.data.MyDatabase
-import com.example.mchomework.data.ReminderRepository
+import com.example.mchomework.data.room.MyDatabase
+import com.example.mchomework.data.repository.ReminderRepository
 
 object Graph {
     lateinit var database: MyDatabase

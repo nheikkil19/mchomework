@@ -1,5 +1,6 @@
 package com.example.mchomework.home
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,28 +8,30 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.mchomework.Graph.database
-import com.example.mchomework.Graph.reminderRepository
-import com.example.mchomework.data.MyDatabase
-import com.example.mchomework.data.Reminder
-import com.example.mchomework.data.ReminderDao
+import androidx.navigation.navArgument
+import com.example.mchomework.data.entity.Reminder
+import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun Home(navController: NavController) {
+    val viewModel: ReminderViewModel = viewModel()
+    val viewState by viewModel.state.collectAsState()
+
     Surface() {
         Scaffold(
             modifier = Modifier.padding(bottom = 30.dp),
@@ -57,45 +60,42 @@ fun Home(navController: NavController) {
                 ) {
                     Text(text = "Log Out")
                 }
-                reminderList()
+                reminderList(
+                    list = viewState.reminders,
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
         }
     }
 }
 
 @Composable
-fun reminderList() {
-    val coroutineScope = rememberCoroutineScope()
-    val list: List<Reminder> = listOf(
-        Reminder(
-            message = "eat food",
-            reminder_time = Date().time,
-            creation_time = Date().time,
-            creator_id = 1,
-            reminder_seen = false
-        )
-    )
-
-    for (item: Reminder in list) {
-        coroutineScope.launch { reminderRepository.addReminder(item) }
-
-    }
-    /*
+fun reminderList(
+    list: List<Reminder>,
+    navController: NavController,
+    viewModel: ReminderViewModel
+) {
     LazyColumn() {
         items(list) { item ->
-            ReminderItem(item)
+            ReminderItem(
+                reminder = item,
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     }
 
-     */
 }
 
 @Composable
 private fun ReminderItem(
-    reminder: Reminder
+    reminder: Reminder,
+    navController: NavController,
+    viewModel: ReminderViewModel
 ) {
-    ConstraintLayout(modifier = Modifier.clickable { /*editReminder(reminder)*/ }) {
-        val (divider, reminderTitle, reminderTime) = createRefs()
+    ConstraintLayout(modifier = Modifier.clickable { navController.navigate("editReminder${reminder.id}") }) {
+        val (divider, reminderTitle, reminderTime, delButton) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
@@ -107,8 +107,8 @@ private fun ReminderItem(
             text = reminder.message,
             maxLines = 1,
             modifier = Modifier.constrainAs(reminderTitle) {
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
+                top.linkTo(parent.top, 10.dp)
+                bottom.linkTo(reminderTime.top, 10.dp)
                 start.linkTo(parent.start, 10.dp)
             }
         )
@@ -116,14 +116,25 @@ private fun ReminderItem(
             text = reminder.reminder_time.toDateString(),
             maxLines = 1,
             modifier = Modifier.constrainAs(reminderTime) {
-                top.linkTo(parent.top, 20.dp)
-                bottom.linkTo(parent.bottom, 20.dp)
-                end.linkTo(parent.end, 10.dp)
+                top.linkTo(reminderTitle.bottom, 10.dp)
+                bottom.linkTo(parent.bottom, 10.dp)
+                start.linkTo(parent.start, 10.dp)
             }
         )
+        Button(
+            onClick = { runBlocking { viewModel.deleteReminder(reminder)
+            } },
+            modifier = Modifier.constrainAs(delButton) {
+                top.linkTo(parent.top, 10.dp)
+                bottom.linkTo(parent.bottom, 10.dp)
+                end.linkTo(parent.end, 10.dp)
+            }
+        ) {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "")
+        }
     }
 }
 
 private fun Long.toDateString(): String {
-    return SimpleDateFormat("dd.MM.yyyy").format(this)
+    return SimpleDateFormat("hh:mm dd.MM.yyyy").format(this)
 }

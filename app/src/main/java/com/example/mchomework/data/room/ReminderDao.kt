@@ -1,6 +1,7 @@
-package com.example.mchomework.data
+package com.example.mchomework.data.room
 
 import androidx.room.*
+import com.example.mchomework.data.entity.Reminder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -10,10 +11,10 @@ abstract class ReminderDao {
     abstract fun getAllReminders(): Flow<List<Reminder>>
 
     @Query("SELECT * FROM reminders WHERE id = :id")
-    abstract fun getReminder(id: Int): Reminder?
+    abstract suspend fun getReminder(id: Int): Reminder?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insert(entity: Reminder)
+    abstract suspend fun insert(entity: Reminder): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(entity: Reminder)

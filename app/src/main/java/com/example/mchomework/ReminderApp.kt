@@ -1,9 +1,13 @@
 package com.example.mchomework
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.home.Home
 import com.example.mchomework.login.Login
 import com.example.mchomework.reminder.Reminder
@@ -26,8 +30,13 @@ fun ReminderApp(
         composable(route = "addReminder") {
             Reminder(navController = appState.navController, edit = false)
         }
-        composable(route = "editReminder") {
-            Reminder(navController = appState.navController, edit = true)
+       composable(route = "editReminder{id}",
+            arguments = listOf(navArgument("id") {
+               type = NavType.IntType
+               defaultValue = 0
+           })) {
+           Reminder(navController = appState.navController, edit = true, reminderId = it.arguments?.getInt("id"))
         }
+
     }
 }

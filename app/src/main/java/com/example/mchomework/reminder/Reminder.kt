@@ -1,5 +1,6 @@
 package com.example.mchomework.reminder
 
+import android.util.Log
 import android.widget.Space
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -7,23 +8,32 @@ import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.mchomework.login.onLoginButtonClick
 import com.google.accompanist.insets.systemBarsPadding
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mchomework.data.entity.Reminder
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.time.hours
 
 @Composable
 fun Reminder(
     navController: NavController,
-    edit: Boolean
+    edit: Boolean,
+    viewModel: ReminderViewModel = viewModel(),
+    reminderId: Int? = 0
 ) {
+    val viewState by viewModel.state.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
     var buttonText = "Create reminder"
     val message = rememberSaveable { mutableStateOf("") }
     val day = rememberSaveable { mutableStateOf("") }
@@ -33,9 +43,24 @@ fun Reminder(
     val min = rememberSaveable { mutableStateOf("") }
 
     if (edit) {
-        buttonText = "Apply changes"
-        message.value = "add later"
+        runBlocking {
+            buttonText = "Apply changes"
+            val reminder = reminderId?.let { viewModel.getReminder(it) }
+            val cal = Calendar.getInstance()
+            Log.d("myTag", "plz work")
+            if (reminder != null) {
+                cal.time = Date(reminder.reminder_time)
+                message.value = reminder.message
+                hour.value = cal.get((Calendar.HOUR_OF_DAY)).toString()
+                min.value = cal.get((Calendar.MINUTE)).toString()
+                day.value = cal.get((Calendar.DAY_OF_MONTH)).toString()
+                month.value = cal.get((Calendar.MONTH)).toString()
+                year.value = cal.get((Calendar.YEAR)).toString()
+            }
+        }
+
     }
+
     Surface() {
         Column(
             modifier = Modifier
@@ -140,7 +165,50 @@ fun Reminder(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    coroutineScope.launch {
+                        if (!edit) {
+                            viewModel.saveReminder(
+                                com.example.mchomework.data.entity.Reminder(
+                                    message = message.value,
+                                    reminder_time = dateToLong(
+                                        hour.value,
+                                        min.value,
+                                        day.value,
+                                        month.value,
+                                        year.value
+                                    ),
+                                    creation_time = Date().time,
+                                    creator_id = 1,
+                                    reminder_seen = false
+                                )
+                            )
+                        }
+                        else {
+                            reminderId?.let {
+                                com.example.mchomework.data.entity.Reminder(
+                                    id = it,
+                                    message = message.value,
+                                    reminder_time = dateToLong(
+                                        hour.value,
+                                        min.value,
+                                        day.value,
+                                        month.value,
+                                        year.value
+                                    ),
+                                    creation_time = Date().time,
+                                    creator_id = 1,
+                                    reminder_seen = false
+                                )
+                            }?.let {
+                                viewModel.updateReminder(
+                                    it
+                                )
+                            }
+                        }
+                    }
+                    navController.popBackStack()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp)
@@ -149,4 +217,10 @@ fun Reminder(
             }
         }
    }
+}
+
+fun dateToLong( h: String, m: String, d: String, M: String, y: String): Long {
+    val format = SimpleDateFormat("hh:mm dd.MM.yyyy")
+    val dateString = "$h:$m $d.$M.$y"
+    return format.parse(dateString).time
 }
