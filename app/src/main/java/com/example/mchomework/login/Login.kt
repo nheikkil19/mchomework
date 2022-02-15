@@ -33,7 +33,8 @@ fun Login(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .systemBarsPadding(),
+                .systemBarsPadding()
+                .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

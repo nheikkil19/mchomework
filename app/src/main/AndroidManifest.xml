@@ -26,12 +26,8 @@
             android:name=".LoginActivity"
             android:exported="true"
             android:label="Login"
-            android:theme="@style/Theme.Mchomework.NoActionBar">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:theme="@style/Theme.Mchomework.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
         </activity>
 
 

@@ -3,6 +3,7 @@ package com.example.mchomework
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
@@ -24,7 +25,6 @@ class LoginActivity(): ComponentActivity() {
             putString("password", "") //pass
             apply()
         }
-
         setContent {
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
