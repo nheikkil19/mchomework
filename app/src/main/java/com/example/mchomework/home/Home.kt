@@ -1,7 +1,6 @@
 package com.example.mchomework.home
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,7 +20,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.navArgument
 import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.reminder.ReminderViewModel

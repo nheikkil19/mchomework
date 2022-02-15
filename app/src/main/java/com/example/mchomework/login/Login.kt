@@ -1,7 +1,6 @@
 package com.example.mchomework.login
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -17,9 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
-import com.example.mchomework.MainActivity
 import com.example.mchomework.R
 import com.google.accompanist.insets.systemBarsPadding
 

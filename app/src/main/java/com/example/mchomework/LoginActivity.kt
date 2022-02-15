@@ -1,11 +1,13 @@
 package com.example.mchomework
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,26 +26,30 @@ class LoginActivity(): ComponentActivity() {
         }
 
         setContent {
-            val appState = rememberReminderAppState()
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-
-                    NavHost(
-                        navController = appState.navController,
-                        startDestination = "login"
-                    ) {
-                        composable("login") {
-                            Login(sharedPref = sharedPref, navController = appState.navController)
-                        }
-                        activity(route = "home") {
-                            activityClass = MainActivity::class
-                        }
-                    }
-
-
+                    loginApp(sharedPref = sharedPref)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun loginApp(
+    sharedPref: SharedPreferences
+) {
+    val appState = rememberReminderAppState()
+    NavHost(
+        navController = appState.navController,
+        startDestination = "login"
+        ) {
+        composable("login") {
+            Login(sharedPref = sharedPref, navController = appState.navController)
+        }
+        activity(route = "home") {
+            activityClass = MainActivity::class
         }
     }
 }
