@@ -15,12 +15,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.navArgument
+import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
@@ -46,7 +48,7 @@ fun Home(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "New Payment"
+                        contentDescription = stringResource(R.string.newPayment)
                     )
                 }
             }
@@ -65,7 +67,7 @@ fun Home(
                     ) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Log Out")
+                    Text(text = stringResource(R.string.logOut))
                 }
                 reminderList(
                     list = viewState.reminders,

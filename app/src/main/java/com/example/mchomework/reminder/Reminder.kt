@@ -1,11 +1,6 @@
 package com.example.mchomework.reminder
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.location.Location
-import android.util.Log
-import android.widget.Space
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -16,18 +11,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.location.FusedLocationProviderClient
+import com.example.mchomework.R
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
-@SuppressLint("MissingPermission")
 @Composable
 fun Reminder(
     navController: NavController,
@@ -37,18 +32,17 @@ fun Reminder(
 ) {
     val viewState by viewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-    var buttonText = "Create reminder"
     val message = rememberSaveable { mutableStateOf("") }
     val day = rememberSaveable { mutableStateOf("") }
     val month = rememberSaveable { mutableStateOf("") }
     val year = rememberSaveable { mutableStateOf("") }
     val hour = rememberSaveable { mutableStateOf("") }
     val min = rememberSaveable { mutableStateOf("") }
-
+    val buttonText = if (!edit) stringResource(R.string.createReminder)
+    else stringResource(R.string.applyChanges)
 
     if (edit) {
         runBlocking {
-            buttonText = "Apply changes"
             val reminder = reminderId?.let { viewModel.getReminder(it) }
             val cal = Calendar.getInstance()
             if (reminder != null) {
@@ -61,7 +55,6 @@ fun Reminder(
                 year.value = cal.get((Calendar.YEAR)).toString()
             }
         }
-
     }
 
     Surface() {
@@ -74,7 +67,7 @@ fun Reminder(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Message",
+                text = stringResource(R.string.message),
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
@@ -90,15 +83,15 @@ fun Reminder(
                 .fillMaxWidth()
             ) {
                 Text(
-                    text = "Day",
+                    text = stringResource(R.string.day),
                     modifier = Modifier.weight(30F)
                 )
                 Text(
-                    text = "Month",
+                    text = stringResource(R.string.month),
                     modifier = Modifier.weight(30F)
                 )
                 Text(
-                    text = "Year",
+                    text = stringResource(R.string.year),
                     modifier = Modifier.weight(40F)
                 )
             }
@@ -136,7 +129,7 @@ fun Reminder(
                 .fillMaxWidth()
             ) {
                 Text(
-                    text = "Time",
+                    text = stringResource(R.string.time),
                     modifier = Modifier.fillMaxWidth()
                 )
 

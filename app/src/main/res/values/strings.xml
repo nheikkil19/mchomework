@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">mchomework</string>
+    <string name="newPayment">New Payment</string>
+    <string name="logOut">Log Out</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="account">Account</string>
+    <string name="createReminder">Create reminder</string>
+    <string name="applyChanges">Apply changes</string>
+    <string name="time">Time</string>
+    <string name="year">Year</string>
+    <string name="month">Month</string>
+    <string name="day">Day</string>
+    <string name="message">Message</string>
 </resources>

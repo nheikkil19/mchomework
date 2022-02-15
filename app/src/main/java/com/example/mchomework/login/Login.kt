@@ -13,12 +13,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import com.example.mchomework.MainActivity
+import com.example.mchomework.R
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
@@ -40,12 +42,12 @@ fun Login(
         ) {
             Icon(
                 imageVector = Icons.Rounded.AccountBox,
-                contentDescription = "Account",
+                contentDescription = stringResource(R.string.account),
                 modifier = Modifier.size(180.dp),
                 tint = Color.Red
             )
             Spacer(modifier = Modifier.size(4.dp))
-            Text(text = "Username", modifier = Modifier.fillMaxWidth())
+            Text(text = stringResource(R.string.username), modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
                 value = username.value,
                 onValueChange = { data -> username.value = data },
@@ -55,7 +57,7 @@ fun Login(
                 )
             )
             Spacer(modifier = Modifier.size(4.dp))
-            Text(text = "Password", modifier = Modifier.fillMaxWidth())
+            Text(text = stringResource(R.string.password), modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { data -> password.value = data },
@@ -77,7 +79,7 @@ fun Login(
                     .fillMaxWidth()
                     .height(80.dp)
             ) {
-                Text(text = "Login")
+                Text(text = stringResource(R.string.login))
             }
         }
     }
