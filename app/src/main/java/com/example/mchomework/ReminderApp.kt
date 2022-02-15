@@ -1,30 +1,28 @@
 package com.example.mchomework
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.home.Home
 import com.example.mchomework.login.Login
 import com.example.mchomework.reminder.Reminder
-import com.google.android.gms.location.FusedLocationProviderClient
 
 @Composable
 fun ReminderApp(
-    sharedPref: SharedPreferences,
     appState: ReminderAppState = rememberReminderAppState(),
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = "login"
+        startDestination = "home"
     ) {
-        composable(route = "login") {
-            Login(sharedPref, navController = appState.navController)
-        }
+
         composable(route = "home") {
             Home(navController = appState.navController)
         }
@@ -38,6 +36,8 @@ fun ReminderApp(
            })) {
            Reminder(navController = appState.navController, edit = true, reminderId = it.arguments?.getInt("id"))
         }
-
+        activity("login") {
+            activityClass = LoginActivity::class
+        }
     }
 }

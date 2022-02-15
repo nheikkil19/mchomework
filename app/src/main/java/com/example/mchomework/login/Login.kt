@@ -1,6 +1,7 @@
 package com.example.mchomework.login
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -15,15 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
+import com.example.mchomework.MainActivity
 import com.google.accompanist.insets.systemBarsPadding
 
 @Composable
 fun Login(
     sharedPref: SharedPreferences,
-    navController: NavController) {
+    navController: NavController
+    ) {
     val username = rememberSaveable{ mutableStateOf("") }
     val password = rememberSaveable{ mutableStateOf("") }
+
+    Log.d("myTag", "plz")
 
     Surface( modifier = Modifier.fillMaxSize()) {
         Column(
@@ -38,7 +44,7 @@ fun Login(
                 imageVector = Icons.Rounded.AccountBox,
                 contentDescription = "Account",
                 modifier = Modifier.size(180.dp),
-                tint = Color.White
+                tint = Color.Red
             )
             Spacer(modifier = Modifier.size(4.dp))
             Text(text = "Username", modifier = Modifier.fillMaxWidth())
@@ -64,10 +70,10 @@ fun Login(
             Spacer(modifier = Modifier.size(8.dp))
             Button(
                 onClick = { onLoginButtonClick(
-                    navController,
                     sharedPref,
                     username.value,
-                    password.value
+                    password.value,
+                    navController
                 ) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -80,10 +86,10 @@ fun Login(
 }
 
 fun onLoginButtonClick(
-    navController: NavController,
     sharedPref: SharedPreferences,
     username: String,
-    password: String
+    password: String,
+    navController: NavController
 ) {
     if ( username == sharedPref.getString("username", null) &&
          password == sharedPref.getString("password", null) ) {
