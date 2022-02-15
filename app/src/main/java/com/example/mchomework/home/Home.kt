@@ -1,5 +1,6 @@
 package com.example.mchomework.home
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,7 +29,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun Home(navController: NavController) {
+fun Home(
+    navController: NavController,
+    sharedPref: SharedPreferences
+) {
     val viewModel: ReminderViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
 
@@ -55,7 +59,10 @@ fun Home(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = { navController.navigate("login") },
+                    onClick = { logOutClick(
+                        navController = navController,
+                        sharedPref = sharedPref
+                    ) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = "Log Out")
@@ -133,6 +140,17 @@ private fun ReminderItem(
             Icon(imageVector = Icons.Default.Delete, contentDescription = "")
         }
     }
+}
+
+fun logOutClick(
+    navController: NavController,
+    sharedPref: SharedPreferences
+) {
+    with(sharedPref.edit()) {
+        putBoolean("loggedIn", false)
+        apply()
+    }
+    navController.navigate("login")
 }
 
 private fun Long.toDateString(): String {

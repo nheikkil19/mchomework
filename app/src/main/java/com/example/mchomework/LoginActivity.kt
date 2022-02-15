@@ -2,8 +2,6 @@ package com.example.mchomework
 
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
@@ -18,7 +16,7 @@ class LoginActivity(): ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putString("username", "") //user
             putString("password", "") //pass

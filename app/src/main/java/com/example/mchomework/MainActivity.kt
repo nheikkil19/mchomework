@@ -22,12 +22,12 @@ import com.google.android.gms.location.LocationServices
 class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
         setContent {
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    ReminderApp()
+                    ReminderApp(sharedPref)
                 }
             }
         }

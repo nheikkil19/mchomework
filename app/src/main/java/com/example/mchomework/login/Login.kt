@@ -29,8 +29,6 @@ fun Login(
     val username = rememberSaveable{ mutableStateOf("") }
     val password = rememberSaveable{ mutableStateOf("") }
 
-    Log.d("myTag", "plz")
-
     Surface( modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -93,6 +91,10 @@ fun onLoginButtonClick(
 ) {
     if ( username == sharedPref.getString("username", null) &&
          password == sharedPref.getString("password", null) ) {
+        with(sharedPref.edit()) {
+            putBoolean("loggedIn", true)
+            apply()
+        }
         navController.navigate("home")
     }
 }
