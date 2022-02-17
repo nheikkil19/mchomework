@@ -7,6 +7,7 @@ import com.example.mchomework.data.repository.ReminderRepository
 
 object Graph {
     lateinit var database: MyDatabase
+    lateinit var appContext: Context
 
     val reminderRepository by lazy {
         ReminderRepository(
@@ -16,9 +17,10 @@ object Graph {
 
 
     fun provide(context: Context) {
-    database = Room.databaseBuilder(context, MyDatabase::class.java, "myData.db")
-        .fallbackToDestructiveMigration()
-        .build()
+        appContext = context
+        database = Room.databaseBuilder(context, MyDatabase::class.java, "myData.db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
 

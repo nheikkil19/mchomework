@@ -22,6 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
+import com.example.mchomework.notification.createNotificationChannel
+import com.example.mchomework.notification.notifyReminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.runBlocking

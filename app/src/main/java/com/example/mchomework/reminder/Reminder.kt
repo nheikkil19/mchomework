@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mchomework.R
+import com.example.mchomework.notification.setNotificationAtTime
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
@@ -30,7 +31,6 @@ fun Reminder(
     viewModel: ReminderViewModel = viewModel(),
     reminderId: Int? = 0
 ) {
-    val viewState by viewModel.state.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val message = rememberSaveable { mutableStateOf("") }
     val day = rememberSaveable { mutableStateOf("") }
@@ -42,7 +42,7 @@ fun Reminder(
     else stringResource(R.string.applyChanges)
 
     if (edit) {
-        runBlocking {
+        coroutineScope.launch {
             val reminder = reminderId?.let { viewModel.getReminder(it) }
             val cal = Calendar.getInstance()
             if (reminder != null) {
