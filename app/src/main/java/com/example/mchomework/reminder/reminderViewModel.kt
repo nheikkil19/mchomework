@@ -6,6 +6,7 @@ import com.example.mchomework.Graph
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.data.repository.ReminderRepository
 import com.example.mchomework.notification.createNotificationChannel
+import com.example.mchomework.notification.deleteNotification
 import com.example.mchomework.notification.setNotificationAtTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,8 @@ class ReminderViewModel(
     suspend fun saveReminder(reminder: Reminder): Long {
         setNotificationAtTime(
             delay = reminder.reminder_time - Date().time,
-            message = reminder.message
+            message = reminder.message,
+            id = reminder.id
         )
         return reminderRepository.addReminder(reminder)
     }
@@ -35,11 +37,13 @@ class ReminderViewModel(
     suspend fun updateReminder(reminder: Reminder) {
         setNotificationAtTime(
             delay = reminder.reminder_time - Date().time,
-            message = reminder.message
+            message = reminder.message,
+            id = reminder.id
         )
         return reminderRepository.updateReminder(reminder)
     }
     suspend fun deleteReminder(reminder: Reminder) {
+        deleteNotification(reminder.id)
         return reminderRepository.deleteReminder(reminder)
     }
 

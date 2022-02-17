@@ -18,9 +18,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mchomework.R
-import com.example.mchomework.notification.setNotificationAtTime
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,7 +40,7 @@ fun Reminder(
     else stringResource(R.string.applyChanges)
 
     if (edit) {
-        coroutineScope.launch {
+        LaunchedEffect(coroutineScope) {
             val reminder = reminderId?.let { viewModel.getReminder(it) }
             val cal = Calendar.getInstance()
             if (reminder != null) {
@@ -220,7 +218,7 @@ fun Reminder(
 }
 
 fun dateToLong( h: String, m: String, d: String, M: String, y: String): Long {
-    val format = SimpleDateFormat("hh:mm dd.MM.yyyy", Locale.getDefault())
+    val format = SimpleDateFormat("hh:mm dd.MM.yyyy", Locale("finnish"))
     val dateString = "$h:$m $d.$M.$y"
     return format.parse(dateString).time
 }

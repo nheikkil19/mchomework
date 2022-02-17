@@ -156,5 +156,5 @@ fun logOutClick(
 }
 
 private fun Long.toDateString(): String {
-    return SimpleDateFormat("hh:mm dd.MM.yyyy", Locale.getDefault()).format(this)
+    return SimpleDateFormat("hh:mm dd.MM.yyyy", Locale("finnish")).format(this)
 }
