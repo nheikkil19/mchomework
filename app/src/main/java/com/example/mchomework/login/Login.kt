@@ -45,8 +45,8 @@ fun Login(
                 tint = Color.Red
             )
             Spacer(modifier = Modifier.size(4.dp))
-            Text(text = stringResource(R.string.username), modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
+                label = { Text(text = stringResource(R.string.username)) },
                 value = username.value,
                 onValueChange = { data -> username.value = data },
                 modifier = Modifier.fillMaxWidth(),
@@ -55,8 +55,8 @@ fun Login(
                 )
             )
             Spacer(modifier = Modifier.size(4.dp))
-            Text(text = stringResource(R.string.password), modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
+                label = { Text(text = stringResource(R.string.password)) },
                 value = password.value,
                 onValueChange = { data -> password.value = data },
                 modifier = Modifier.fillMaxWidth(),
