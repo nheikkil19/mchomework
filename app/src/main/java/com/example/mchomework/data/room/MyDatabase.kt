@@ -6,7 +6,7 @@ import com.example.mchomework.data.entity.Reminder
 
 @Database(
     entities = [Reminder::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class MyDatabase: RoomDatabase() {

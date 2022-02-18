@@ -3,10 +3,7 @@ package com.example.mchomework.reminder
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -36,6 +33,7 @@ fun Reminder(
     val year = rememberSaveable { mutableStateOf("") }
     val hour = rememberSaveable { mutableStateOf("") }
     val min = rememberSaveable { mutableStateOf("") }
+    val notify = rememberSaveable { mutableStateOf(true) }
     val buttonText = if (!edit) stringResource(R.string.createReminder)
     else stringResource(R.string.applyChanges)
 
@@ -51,6 +49,7 @@ fun Reminder(
                 day.value = cal.get((Calendar.DAY_OF_MONTH)).toString()
                 month.value = cal.get((Calendar.MONTH)).toString()
                 year.value = cal.get((Calendar.YEAR)).toString()
+                notify.value = reminder.notify
             }
         }
     }
@@ -160,6 +159,17 @@ fun Reminder(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.wrapContentHeight()
+            ) {
+                Text("Notification", modifier = Modifier.wrapContentWidth())
+                Checkbox(
+                    checked = notify.value,
+                    onCheckedChange = { bool -> notify.value = bool }
+                )
+
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     coroutineScope.launch {
@@ -172,13 +182,14 @@ fun Reminder(
                                         min.value,
                                         day.value,
                                         month.value,
-                                        year.value
+                                        year.value,
                                     ),
                                     location_x = 0.0,
                                     location_y = 0.0,
                                     creation_time = Date().time,
                                     creator_id = 1,
-                                    reminder_seen = false
+                                    reminder_seen = false,
+                                    notify = notify.value
                                 )
                             )
                         }
@@ -198,7 +209,8 @@ fun Reminder(
                                     location_y = 0.0,
                                     creation_time = Date().time,
                                     creator_id = 1,
-                                    reminder_seen = false
+                                    reminder_seen = false,
+                                    notify = notify.value
                                 )
                             }?.let {
                                 viewModel.updateReminder(

@@ -22,12 +22,15 @@ class ReminderViewModel(
         get() = _state
 
     suspend fun saveReminder(reminder: Reminder): Long {
-        setNotificationAtTime(
-            delay = reminder.reminder_time - Date().time,
-            message = reminder.message,
-            id = reminder.id
-        )
-        return reminderRepository.addReminder(reminder)
+        val ret = reminderRepository.addReminder(reminder)
+        if (reminder.notify) {
+            setNotificationAtTime(
+                delay = reminder.reminder_time - Date().time,
+                message = reminder.message,
+                id = reminder.id
+            )
+        }
+        return ret
     }
 
     suspend fun getReminder(id: Int): Reminder? {
@@ -35,12 +38,14 @@ class ReminderViewModel(
     }
 
     suspend fun updateReminder(reminder: Reminder) {
-        setNotificationAtTime(
-            delay = reminder.reminder_time - Date().time,
-            message = reminder.message,
-            id = reminder.id
-        )
-        return reminderRepository.updateReminder(reminder)
+        reminderRepository.updateReminder(reminder)
+        if (reminder.notify) {
+            setNotificationAtTime(
+                delay = reminder.reminder_time - Date().time,
+                message = reminder.message,
+                id = reminder.id
+            )
+        }
     }
 
     suspend fun deleteReminder(reminder: Reminder) {
