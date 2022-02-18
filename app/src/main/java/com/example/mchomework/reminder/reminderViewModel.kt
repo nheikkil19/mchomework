@@ -46,6 +46,9 @@ class ReminderViewModel(
                 id = reminder.id
             )
         }
+        else {
+            deleteNotification(reminder.id)
+        }
     }
 
     suspend fun deleteReminder(reminder: Reminder) {
