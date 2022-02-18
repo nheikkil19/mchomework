@@ -8,8 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +25,7 @@ import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import kotlinx.coroutines.NonDisposableHandle.parent
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,31 +60,11 @@ fun Home(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Row(
-                    modifier = Modifier.height(50.dp)
-                ) {
-                    // Logout button
-                    Button(
-                        onClick = {
-                            logOutClick(
-                                navController = navController,
-                                sharedPref = sharedPref
-                            )
-                        },
-                        modifier = Modifier.width(100.dp)
-                    ) {
-                        Text(text = stringResource(R.string.logOut))
-                    }
-                    // HideButton
-                    Button(
-                        onClick = { viewModel.hide() },
-                        modifier = Modifier.width(50.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = stringResource(R.string.hide))
-                    }
-                }
+                topBar(
+                    navController = navController,
+                    sharedPref = sharedPref,
+                    viewModel = viewModel
+                )
                 reminderList(
                     list = viewState.reminders,
                     navController = navController,
@@ -93,6 +74,55 @@ fun Home(
         }
     }
 }
+
+@Composable
+fun topBar(
+    navController: NavController,
+    sharedPref: SharedPreferences,
+    viewModel: ReminderViewModel
+) {
+    TopAppBar(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val (logout, hide) = createRefs()
+            // Logout button
+            Button(
+                onClick = {
+                    logOutClick(
+                        navController = navController,
+                        sharedPref = sharedPref
+                    )
+                },
+                modifier = Modifier.wrapContentWidth()
+                    .constrainAs(logout) {
+                        top.linkTo(parent.top, margin = 2.dp)
+                        start.linkTo(parent.start, margin = 2.dp)
+                        bottom.linkTo(parent.bottom, margin = 2.dp)
+                    }
+            ) {
+                Text(text = stringResource(R.string.logOut))
+            }
+            // HideButton
+            Button(
+                onClick = { viewModel.hide() },
+                modifier = Modifier.wrapContentWidth()
+                    .constrainAs(hide) {
+                        top.linkTo(parent.top, margin = 2.dp)
+                        end.linkTo(parent.end, margin = 2.dp)
+                        bottom.linkTo(parent.bottom, margin = 2.dp)
+                    }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.List,
+                    contentDescription = stringResource(R.string.hide))
+            }
+        }
+    }
+}
+
 
 @Composable
 fun reminderList(
@@ -117,7 +147,11 @@ private fun ReminderItem(
     navController: NavController,
     viewModel: ReminderViewModel
 ) {
-    ConstraintLayout(modifier = Modifier.clickable { navController.navigate("editReminder${reminder.id}") }) {
+    ConstraintLayout(
+        modifier = Modifier.clickable {
+            navController.navigate("editReminder${reminder.id}")
+        }
+    ) {
         val (divider, reminderTitle, reminderTime, delButton) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
