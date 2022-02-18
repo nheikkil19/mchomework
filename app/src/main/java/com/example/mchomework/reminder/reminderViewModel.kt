@@ -8,9 +8,9 @@ import com.example.mchomework.data.repository.ReminderRepository
 import com.example.mchomework.notification.createNotificationChannel
 import com.example.mchomework.notification.deleteNotification
 import com.example.mchomework.notification.setNotificationAtTime
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import java.util.*
 
 class ReminderViewModel(
@@ -42,23 +42,45 @@ class ReminderViewModel(
         )
         return reminderRepository.updateReminder(reminder)
     }
+
     suspend fun deleteReminder(reminder: Reminder) {
         deleteNotification(reminder.id)
         return reminderRepository.deleteReminder(reminder)
     }
 
-    init {
-        createNotificationChannel()
-        viewModelScope.launch {
-            reminderRepository.getReminders().collect { list ->
-                _state.value = ReminderViewState(
-                    reminders = list
-                )
+    fun hide() {
+        getUnhidden()
+    }
+
+    private fun getUnhidden() {
+        if (state.value.hidden) {
+            viewModelScope.launch {
+                reminderRepository.getRemindersBefore().collect { list ->
+                    _state.value = ReminderViewState(
+                        reminders = list,
+                        hidden = false
+                    )
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                reminderRepository.getReminders().collect { list ->
+                    _state.value = ReminderViewState(
+                        reminders = list,
+                        hidden = true
+                    )
+                }
             }
         }
+    }
+
+    init {
+        createNotificationChannel()
+        getUnhidden()
     }
 }
 
 data class ReminderViewState(
-    val reminders: List<Reminder> = emptyList()
+    val reminders: List<Reminder> = emptyList(),
+    val hidden: Boolean = true
 )

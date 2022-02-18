@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,8 +23,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
-import com.example.mchomework.notification.createNotificationChannel
-import com.example.mchomework.notification.notifyReminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.runBlocking
@@ -60,14 +59,30 @@ fun Home(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Button(
-                    onClick = { logOutClick(
-                        navController = navController,
-                        sharedPref = sharedPref
-                    ) },
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.height(50.dp)
                 ) {
-                    Text(text = stringResource(R.string.logOut))
+                    // Logout button
+                    Button(
+                        onClick = {
+                            logOutClick(
+                                navController = navController,
+                                sharedPref = sharedPref
+                            )
+                        },
+                        modifier = Modifier.width(100.dp)
+                    ) {
+                        Text(text = stringResource(R.string.logOut))
+                    }
+                    // HideButton
+                    Button(
+                        onClick = { viewModel.hide() },
+                        modifier = Modifier.width(50.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = stringResource(R.string.hide))
+                    }
                 }
                 reminderList(
                     list = viewState.reminders,
@@ -85,7 +100,7 @@ fun reminderList(
     navController: NavController,
     viewModel: ReminderViewModel
 ) {
-    LazyColumn() {
+    LazyColumn {
         items(list) { item ->
             ReminderItem(
                 reminder = item,
@@ -94,7 +109,6 @@ fun reminderList(
             )
         }
     }
-
 }
 
 @Composable

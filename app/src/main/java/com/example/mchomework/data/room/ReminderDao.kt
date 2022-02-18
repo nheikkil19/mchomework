@@ -10,6 +10,9 @@ abstract class ReminderDao {
     @Query("SELECT * FROM reminders")
     abstract fun getAllReminders(): Flow<List<Reminder>>
 
+    @Query("SELECT * FROM reminders WHERE reminder_time < :date")
+    abstract fun getRemindersBefore(date: Long): Flow<List<Reminder>>
+
     @Query("SELECT * FROM reminders WHERE id = :id")
     abstract suspend fun getReminder(id: Int): Reminder?
 

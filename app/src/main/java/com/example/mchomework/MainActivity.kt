@@ -8,13 +8,16 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.Observer
 import androidx.navigation.NavType
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.home.Home
 import com.example.mchomework.reminder.Reminder
+import com.example.mchomework.reminder.ReminderViewModel
 import com.example.mchomework.ui.theme.MchomeworkTheme
 
 class MainActivity() : ComponentActivity() {

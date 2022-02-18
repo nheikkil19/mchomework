@@ -3,6 +3,7 @@ package com.example.mchomework.data.repository
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.data.room.ReminderDao
 import kotlinx.coroutines.flow.Flow
+import java.util.*
 
 class ReminderRepository(
     private val reminderDao: ReminderDao
@@ -10,6 +11,9 @@ class ReminderRepository(
 
     fun getReminders(): Flow<List<Reminder>> {
         return reminderDao.getAllReminders()
+    }
+    fun getRemindersBefore(): Flow<List<Reminder>> {
+        return reminderDao.getRemindersBefore(Date().time)
     }
     suspend fun getReminder(id: Int): Reminder? {
         return reminderDao.getReminder(id)
