@@ -79,7 +79,6 @@ fun Reminder(
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
             ) {
                 Text(
                     text = stringResource(R.string.day),
@@ -96,7 +95,7 @@ fun Reminder(
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .height(48.dp)
             ) {
                 OutlinedTextField(
                     value = day.value,
@@ -126,7 +125,6 @@ fun Reminder(
             Spacer(modifier = Modifier.height(8.dp))
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
             ) {
                 Text(
                     text = stringResource(R.string.time),
@@ -136,7 +134,7 @@ fun Reminder(
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
+                .height(48.dp)
                 ) {
                 OutlinedTextField(
                     value = hour.value,
