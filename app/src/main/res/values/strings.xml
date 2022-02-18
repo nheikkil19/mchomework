@@ -15,4 +15,6 @@
     <string name="message">Message</string>
     <string name="reminderDue">Your reminder is due.</string>
     <string name="hide">Hide</string>
+    <string name="hour">Hour</string>
+    <string name="minutes">Minutes</string>
 </resources>

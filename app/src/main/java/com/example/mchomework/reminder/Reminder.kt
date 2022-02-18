@@ -63,11 +63,8 @@ fun Reminder(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = stringResource(R.string.message),
-                modifier = Modifier.fillMaxWidth()
-            )
             OutlinedTextField(
+                label = { Text(text = stringResource(R.string.message)) },
                 value = message.value,
                 onValueChange = { data -> message.value = data },
                 modifier = Modifier.fillMaxWidth(),
@@ -80,24 +77,8 @@ fun Reminder(
                 .fillMaxWidth()
                 .wrapContentHeight()
             ) {
-                Text(
-                    text = stringResource(R.string.day),
-                    modifier = Modifier.weight(30F)
-                )
-                Text(
-                    text = stringResource(R.string.month),
-                    modifier = Modifier.weight(30F)
-                )
-                Text(
-                    text = stringResource(R.string.year),
-                    modifier = Modifier.weight(40F)
-                )
-            }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-            ) {
                 OutlinedTextField(
+                    label = { Text(text = stringResource(R.string.day)) },
                     value = day.value,
                     onValueChange = { data -> day.value = data },
                     modifier = Modifier.weight(30F),
@@ -106,6 +87,7 @@ fun Reminder(
                     )
                 )
                 OutlinedTextField(
+                    label = { Text(text = stringResource(R.string.month)) },
                     value = month.value,
                     onValueChange = { data -> month.value = data },
                     modifier = Modifier.weight(30F),
@@ -114,6 +96,7 @@ fun Reminder(
                     )
                 )
                 OutlinedTextField(
+                    label = { Text(text = stringResource(R.string.year)) },
                     value = year.value,
                     onValueChange = { data -> year.value = data },
                     modifier = Modifier.weight(40F),
@@ -126,18 +109,9 @@ fun Reminder(
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-            ) {
-                Text(
-                    text = stringResource(R.string.time),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-            }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
                 ) {
                 OutlinedTextField(
+                    label = { Text(text = stringResource(R.string.hour)) },
                     value = hour.value,
                     onValueChange = { data -> hour.value = data },
                     modifier = Modifier.weight(48F),
@@ -150,6 +124,7 @@ fun Reminder(
                     modifier = Modifier.weight(4F),
                 )
                 OutlinedTextField(
+                    label = { Text(text = stringResource(R.string.minutes)) },
                     value = min.value,
                     onValueChange = { data -> min.value = data },
                     modifier = Modifier.weight(48F),
