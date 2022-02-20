@@ -74,6 +74,28 @@ fun setNotificationAtTime(delay: Long, message: String, id: Int) {
         )
 }
 
+fun setRepeatingNotificationAtTime(
+    delay: Long,
+    message: String,
+    id: Int,
+    repeatPeriod: Long
+) {
+    val data = workDataOf("msg" to message, "id" to id)
+    val notificationWorkRequest: PeriodicWorkRequest =
+        PeriodicWorkRequestBuilder<NotificationWorker>(repeatPeriod, TimeUnit.MINUTES)
+            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInputData(data)
+            .build()
+
+    WorkManager
+        .getInstance(Graph.appContext)
+        .enqueueUniquePeriodicWork(
+            "reminder_$id",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            notificationWorkRequest
+        )
+}
+
 fun deleteNotification(id: Int) {
     val workManager = WorkManager.getInstance(Graph.appContext)
     workManager.cancelUniqueWork("reminder_$id")

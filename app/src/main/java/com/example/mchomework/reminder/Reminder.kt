@@ -34,6 +34,8 @@ fun Reminder(
     val hour = rememberSaveable { mutableStateOf("") }
     val min = rememberSaveable { mutableStateOf("") }
     val notify = rememberSaveable { mutableStateOf(true) }
+    val daily = rememberSaveable { mutableStateOf(false) }
+    val weekly = rememberSaveable { mutableStateOf(false) }
     val buttonText = if (!edit) stringResource(R.string.createReminder)
     else stringResource(R.string.applyChanges)
 
@@ -50,6 +52,8 @@ fun Reminder(
                 month.value = cal.get((Calendar.MONTH)).toString()
                 year.value = cal.get((Calendar.YEAR)).toString()
                 notify.value = reminder.notify
+                daily.value = reminder.daily
+                weekly.value = reminder.weekly
             }
         }
     }
@@ -142,7 +146,22 @@ fun Reminder(
                     checked = notify.value,
                     onCheckedChange = { bool -> notify.value = bool }
                 )
-
+            }
+            Row(
+                modifier = Modifier.wrapContentHeight(),
+            ) {
+                Text("Repeat daily", modifier = Modifier.wrapContentWidth())
+                Checkbox(
+                    checked = daily.value,
+                    enabled = notify.value and !weekly.value,
+                    onCheckedChange = { bool -> daily.value = bool }
+                )
+                Text("Repeat weekly", modifier = Modifier.wrapContentWidth())
+                Checkbox(
+                    checked = weekly.value,
+                    enabled = notify.value and !daily.value,
+                    onCheckedChange = { bool -> weekly.value = bool }
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Button(
@@ -164,7 +183,9 @@ fun Reminder(
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false,
-                                    notify = notify.value
+                                    notify = notify.value,
+                                    daily = daily.value,
+                                    weekly = weekly.value
                                 )
                             )
                         }
@@ -185,7 +206,9 @@ fun Reminder(
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false,
-                                    notify = notify.value
+                                    notify = notify.value,
+                                    daily = daily.value,
+                                    weekly = weekly.value
                                 )
                             }?.let {
                                 viewModel.updateReminder(

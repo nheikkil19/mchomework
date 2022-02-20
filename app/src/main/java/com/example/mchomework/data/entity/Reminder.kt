@@ -17,4 +17,6 @@ data class Reminder(
     @ColumnInfo(name = "creator_id") val creator_id: Int,
     @ColumnInfo(name = "reminder_seen") val reminder_seen: Boolean,
     @ColumnInfo(name = "notify") val notify: Boolean,
+    @ColumnInfo(name = "daily") val daily: Boolean,
+    @ColumnInfo(name = "weekly") val weekly: Boolean,
 )

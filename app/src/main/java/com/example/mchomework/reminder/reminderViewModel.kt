@@ -8,6 +8,7 @@ import com.example.mchomework.data.repository.ReminderRepository
 import com.example.mchomework.notification.createNotificationChannel
 import com.example.mchomework.notification.deleteNotification
 import com.example.mchomework.notification.setNotificationAtTime
+import com.example.mchomework.notification.setRepeatingNotificationAtTime
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,12 +24,33 @@ class ReminderViewModel(
 
     suspend fun saveReminder(reminder: Reminder): Long {
         val ret = reminderRepository.addReminder(reminder)
+
         if (reminder.notify) {
-            setNotificationAtTime(
-                delay = reminder.reminder_time - Date().time,
-                message = reminder.message,
-                id = reminder.id
-            )
+            when {
+                reminder.daily -> {
+                    setRepeatingNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id,
+                        repeatPeriod = 1
+                    )
+                }
+                reminder.weekly -> {
+                    setRepeatingNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id,
+                        repeatPeriod = 7
+                    )
+                }
+                else -> {
+                    setNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id
+                    )
+                }
+            }
         }
         return ret
     }
@@ -40,11 +62,31 @@ class ReminderViewModel(
     suspend fun updateReminder(reminder: Reminder) {
         reminderRepository.updateReminder(reminder)
         if (reminder.notify) {
-            setNotificationAtTime(
-                delay = reminder.reminder_time - Date().time,
-                message = reminder.message,
-                id = reminder.id
-            )
+            when {
+                reminder.daily -> {
+                    setRepeatingNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id,
+                        repeatPeriod = 1
+                    )
+                }
+                reminder.weekly -> {
+                    setRepeatingNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id,
+                        repeatPeriod = 7
+                    )
+                }
+                else -> {
+                    setNotificationAtTime(
+                        delay = reminder.reminder_time - Date().time,
+                        message = reminder.message,
+                        id = reminder.id
+                    )
+                }
+            }
         }
         else {
             deleteNotification(reminder.id)
