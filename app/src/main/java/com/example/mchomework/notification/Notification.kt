@@ -1,17 +1,20 @@
 package com.example.mchomework.notification
 
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.compose.material.contentColorFor
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.example.mchomework.Graph
 import com.example.mchomework.MainActivity
 import com.example.mchomework.R
+import java.security.Policy
 import java.util.concurrent.TimeUnit
 
 
@@ -36,24 +39,29 @@ fun notifyReminder(message: String) {
     val context = Graph.appContext
     val notificationId = IdCounter.count()
     val intent = Intent(context, MainActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
     }
     val pendingIntent: PendingIntent =
-        PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.startForegroundService(intent)
+    }
+    val notificationManager: NotificationManager =
+        Graph.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     var builder = NotificationCompat.Builder(context, "rm")
         .setSmallIcon(R.drawable.myicon)
         .setContentTitle(message)
         .setContentText(context.getString(R.string.reminderDue))
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setPriority(NotificationCompat.PRIORITY_MAX)
         // Set the intent that will fire when the user taps the notification
         .setContentIntent(pendingIntent)
         .setAutoCancel(true)
+        .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+        .build()
 
-    with(NotificationManagerCompat.from(context)) {
-        // notificationId is a unique int for each notification that you must define
-        notify(notificationId, builder.build())
-    }
+    notificationManager.notify(notificationId, builder)
 
 }
 
@@ -82,7 +90,7 @@ fun setRepeatingNotificationAtTime(
 ) {
     val data = workDataOf("msg" to message, "id" to id)
     val notificationWorkRequest: PeriodicWorkRequest =
-        PeriodicWorkRequestBuilder<NotificationWorker>(repeatPeriod, TimeUnit.MINUTES)
+        PeriodicWorkRequestBuilder<NotificationWorker>(repeatPeriod, TimeUnit.DAYS)
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
             .setInputData(data)
             .build()
@@ -103,6 +111,6 @@ fun deleteNotification(id: Int) {
 
 
 object IdCounter {
-    private var counter = 0
+    private var counter = 1
     fun count(): Int = counter++
 }
