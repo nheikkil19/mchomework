@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mchomework.R
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +25,8 @@ fun Reminder(
     navController: NavController,
     edit: Boolean,
     viewModel: ReminderViewModel = viewModel(),
-    reminderId: Int? = 0
+    reminderId: Int? = 0,
+    markerPosition: LatLng? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
     val message = rememberSaveable { mutableStateOf("") }
@@ -36,8 +38,12 @@ fun Reminder(
     val notify = rememberSaveable { mutableStateOf(true) }
     val daily = rememberSaveable { mutableStateOf(false) }
     val weekly = rememberSaveable { mutableStateOf(false) }
+    val location = rememberSaveable { mutableStateOf(false) }
     val buttonText = if (!edit) stringResource(R.string.createReminder)
-    else stringResource(R.string.applyChanges)
+        else stringResource(R.string.applyChanges)
+    var location_x: Double? = markerPosition?.longitude
+    var location_y: Double? = markerPosition?.latitude
+
 
     if (edit) {
         LaunchedEffect(coroutineScope) {
@@ -54,6 +60,11 @@ fun Reminder(
                 notify.value = reminder.notify
                 daily.value = reminder.daily
                 weekly.value = reminder.weekly
+                location.value = reminder.location_bool
+                if (location.value) {
+                    location_x = reminder.location_x
+                    location_y = reminder.location_y
+                }
             }
         }
     }
@@ -141,27 +152,52 @@ fun Reminder(
             Row(
                 modifier = Modifier.wrapContentHeight()
             ) {
-                Text("Notification", modifier = Modifier.wrapContentWidth())
+                Text(stringResource(R.string.notification), modifier = Modifier.wrapContentWidth())
                 Checkbox(
                     checked = notify.value,
                     onCheckedChange = { bool -> notify.value = bool }
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.wrapContentHeight(),
             ) {
-                Text("Repeat daily", modifier = Modifier.wrapContentWidth())
+                Text(stringResource(R.string.repeatDaily), modifier = Modifier.wrapContentWidth())
                 Checkbox(
                     checked = daily.value,
                     enabled = notify.value and !weekly.value,
                     onCheckedChange = { bool -> daily.value = bool }
                 )
-                Text("Repeat weekly", modifier = Modifier.wrapContentWidth())
+                Text(stringResource(R.string.repeatWeekly), modifier = Modifier.wrapContentWidth())
                 Checkbox(
                     checked = weekly.value,
                     enabled = notify.value and !daily.value,
                     onCheckedChange = { bool -> weekly.value = bool }
                 )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.wrapContentHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Location", modifier = Modifier.wrapContentWidth())
+                Checkbox(
+                    checked = location.value,
+                    onCheckedChange = { bool -> location.value = bool }
+                )
+                Button(
+                    onClick = { navController.navigate("map") },
+                    modifier = Modifier.wrapContentSize(),
+                    enabled = location.value
+                ) {
+                    Text(
+                        text = "Pick Location"
+                    )
+                }
+            }
+            if (location.value && location_x != null && location_y != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Latitude: $location_y\nLongitude: $location_x")
             }
             Spacer(modifier = Modifier.height(8.dp))
             Button(
@@ -185,7 +221,8 @@ fun Reminder(
                                     reminder_seen = false,
                                     notify = notify.value,
                                     daily = daily.value,
-                                    weekly = weekly.value
+                                    weekly = weekly.value,
+                                    location_bool = location.value
                                 )
                             )
                         }
@@ -208,7 +245,8 @@ fun Reminder(
                                     reminder_seen = false,
                                     notify = notify.value,
                                     daily = daily.value,
-                                    weekly = weekly.value
+                                    weekly = weekly.value,
+                                    location_bool = location.value
                                 )
                             }?.let {
                                 viewModel.updateReminder(
@@ -225,6 +263,7 @@ fun Reminder(
             ) {
                 Text(text = buttonText)
             }
+
         }
    }
 }

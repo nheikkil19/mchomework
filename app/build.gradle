@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.example.mchomework"
@@ -97,5 +97,16 @@ dependencies {
 
     // optional - Multiprocess support
     implementation "androidx.work:work-multiprocess:2.7.1"
+
+    // KTX for the Maps SDK for Android
+    implementation 'com.google.maps.android:maps-ktx:3.2.1'
+
+    // (Optional) KTX for the Maps SDK for Android Utility Library
+    implementation 'com.google.maps.android:maps-utils-ktx:3.2.1'
+
+    // More maps
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+//    implementation 'com.google.maps.android:android-maps-utils:2.2.3'
+
 
 }

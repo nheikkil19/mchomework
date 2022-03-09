@@ -17,4 +17,7 @@
     <string name="hide">Hide</string>
     <string name="hour">Hour</string>
     <string name="minutes">Minutes</string>
+    <string name="notification">Notification</string>
+    <string name="repeatDaily">Repeat daily</string>
+    <string name="repeatWeekly">Repeat weekly</string>
 </resources>
