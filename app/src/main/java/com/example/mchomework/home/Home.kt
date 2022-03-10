@@ -25,6 +25,7 @@ import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
+import com.google.android.gms.location.FusedLocationProviderClient
 import kotlinx.coroutines.NonDisposableHandle.parent
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
@@ -33,9 +34,10 @@ import java.util.*
 @Composable
 fun Home(
     navController: NavController,
-    sharedPref: SharedPreferences
+    sharedPref: SharedPreferences,
+    fusedLocationClient: FusedLocationProviderClient
 ) {
-    val viewModel: ReminderViewModel = viewModel()
+    val viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient)
     val viewState by viewModel.state.collectAsState()
 
     Surface() {

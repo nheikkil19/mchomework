@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.mchomework.Graph
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,7 +31,8 @@ import java.util.*
 
 @Composable
 fun MyMap(
-    navController: NavController
+    navController: NavController,
+    fusedLocationClient: FusedLocationProviderClient
 ): LatLng? {
     val mapView = rememberMapViewWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -44,15 +46,15 @@ fun MyMap(
             coroutineScope.launch {
                 val map = mapView.awaitMap()
                 map.uiSettings.isZoomControlsEnabled = true
-                val location = LatLng(65.056, 25.450)
+//                val location = LatLng(65.056, 25.450)
 
-                map.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(location, 15f)
-                )
+//                map.moveCamera(
+//                    CameraUpdateFactory.newLatLngZoom(location, 15f)
+//                )
 
-                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(Graph.appContext)
+//                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(Graph.appContext)
 
-                var marker: Marker? = null
+                var marker: Marker?
 //
                 map.setOnMapLongClickListener { latlng ->
 //                    marker?.remove()

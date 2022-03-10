@@ -1,5 +1,11 @@
 package com.example.mchomework.reminder
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.Location
+import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mchomework.Graph
@@ -9,12 +15,16 @@ import com.example.mchomework.notification.createNotificationChannel
 import com.example.mchomework.notification.deleteNotification
 import com.example.mchomework.notification.setNotificationAtTime
 import com.example.mchomework.notification.setRepeatingNotificationAtTime
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.lang.Thread.sleep
 import java.util.*
 
 class ReminderViewModel(
+    val fusedLocationClient: FusedLocationProviderClient,
     private val reminderRepository: ReminderRepository = Graph.reminderRepository
 ): ViewModel() {
     private val _state = MutableStateFlow(ReminderViewState())
@@ -103,25 +113,52 @@ class ReminderViewModel(
     }
 
     private fun getUnhidden() {
-        if (state.value.hidden) {
-            viewModelScope.launch {
-                reminderRepository.getRemindersBefore().collect { list ->
-                    _state.value = ReminderViewState(
-                        reminders = list,
-                        hidden = false
-                    )
-                }
-            }
-        } else {
-            viewModelScope.launch {
-                reminderRepository.getReminders().collect { list ->
-                    _state.value = ReminderViewState(
-                        reminders = list,
-                        hidden = true
-                    )
-                }
-            }
+        var myLocation: Location?
+        if (ActivityCompat.checkSelfPermission(
+                Graph.appContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                Graph.appContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
         }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location : Location? ->
+                // Got last known location. In some rare situations this can be null.
+                myLocation = location
+                Log.d("tag", "hello2 $myLocation")
+                if (state.value.hidden) {
+                    viewModelScope.launch {
+                        reminderRepository.getRemindersBefore(
+                            myLocation?.longitude ?: 0.0,
+                            myLocation?.latitude ?: 0.0
+                        ).collect { list ->
+                            _state.value = ReminderViewState(
+                                reminders = list,
+                                hidden = false
+                            )
+                        }
+                    }
+                } else {
+                    viewModelScope.launch {
+                        reminderRepository.getReminders().collect { list ->
+                            _state.value = ReminderViewState(
+                                reminders = list,
+                                hidden = true
+                            )
+                        }
+                    }
+                }
+            }
     }
 
     init {

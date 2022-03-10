@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.systemBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mchomework.R
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -24,7 +25,8 @@ import java.util.*
 fun Reminder(
     navController: NavController,
     edit: Boolean,
-    viewModel: ReminderViewModel = viewModel(),
+    fusedLocationClient: FusedLocationProviderClient,
+    viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient),
     reminderId: Int? = 0,
     markerPosition: LatLng? = null
 ) {
