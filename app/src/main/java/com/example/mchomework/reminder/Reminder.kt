@@ -41,8 +41,8 @@ fun Reminder(
     val location = rememberSaveable { mutableStateOf(false) }
     val buttonText = if (!edit) stringResource(R.string.createReminder)
         else stringResource(R.string.applyChanges)
-    var location_x: Double? = markerPosition?.longitude
-    var location_y: Double? = markerPosition?.latitude
+    var location_x: Double = markerPosition?.longitude ?: 200.0
+    var location_y: Double = markerPosition?.latitude ?: 200.0
 
 
     if (edit) {
@@ -195,7 +195,7 @@ fun Reminder(
                     )
                 }
             }
-            if (location.value && location_x != null && location_y != null) {
+            if (location.value && location_x != 200.0 && location_y != 200.0) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("Latitude: $location_y\nLongitude: $location_x")
             }
@@ -214,8 +214,8 @@ fun Reminder(
                                         month.value,
                                         year.value,
                                     ),
-                                    location_x = 0.0,
-                                    location_y = 0.0,
+                                    location_x = location_x,
+                                    location_y = location_y,
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false,
@@ -238,8 +238,8 @@ fun Reminder(
                                         month.value,
                                         year.value
                                     ),
-                                    location_x = 0.0,
-                                    location_y = 0.0,
+                                    location_x = location_x,
+                                    location_y = location_y,
                                     creation_time = Date().time,
                                     creator_id = 1,
                                     reminder_seen = false,
