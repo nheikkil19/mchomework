@@ -1,5 +1,8 @@
 package com.example.mchomework.map
 
+import android.annotation.SuppressLint
+import android.location.GnssAntennaInfo
+import android.location.GpsStatus
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,12 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import com.example.mchomework.Graph
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.CancellationToken
 import com.google.maps.android.ktx.awaitMap
 import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
@@ -44,14 +50,35 @@ fun MyMap(
                     CameraUpdateFactory.newLatLngZoom(location, 15f)
                 )
 
-                var marker: Marker? = null
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(Graph.appContext)
 
+                var marker: Marker? = null
+//
                 map.setOnMapLongClickListener { latlng ->
-                    marker?.remove()
-                    marker = map.addMarker(
+//                    marker?.remove()
+                    var marker = map.addMarker(
                         MarkerOptions().position(latlng)
                     )
                     markerPosition.value = marker?.position
+                }
+                @SuppressLint("MissingPermission")
+                map.isMyLocationEnabled = true
+                map.setOnMyLocationButtonClickListener {
+
+                    @SuppressLint("MissingPermission")
+                    val lastLocation = fusedLocationClient.lastLocation
+                    while (!lastLocation.isComplete) {
+                    }
+                    val latLng = LatLng(
+                        lastLocation.result.latitude,
+                        lastLocation.result.longitude
+                    )
+//                    marker?.remove()
+                    marker = map.addMarker(
+                        MarkerOptions().position( latLng )
+                    )
+                    markerPosition.value = marker?.position
+                    false
                 }
             }
         }
