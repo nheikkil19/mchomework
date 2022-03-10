@@ -27,7 +27,7 @@ class ReminderRepository(
 
         return a
     }
-    suspend fun getReminder(id: Int): Reminder? {
+    suspend fun getReminder(id: Int): Reminder {
         return reminderDao.getReminder(id)
     }
     suspend fun updateReminder(reminder: Reminder) {
@@ -41,7 +41,7 @@ class ReminderRepository(
 }
 
 
-private fun getDistance(
+fun getDistance(
     position_x: Double,
     position_y: Double,
     reminder: Reminder
@@ -57,5 +57,5 @@ private fun getDistance(
     val res = posA.distanceTo(posB)
 //    Log.d("tag", "posA = $posA posB = $posB result = $res")
 
-    return res < 100
+    return res < 100 || !reminder.location_bool
 }

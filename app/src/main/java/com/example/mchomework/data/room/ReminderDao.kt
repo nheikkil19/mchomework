@@ -14,7 +14,7 @@ abstract class ReminderDao {
     abstract fun getRemindersBefore(date: Long): Flow<List<Reminder>>
 
     @Query("SELECT * FROM reminders WHERE id = :id")
-    abstract suspend fun getReminder(id: Int): Reminder?
+    abstract suspend fun getReminder(id: Int): Reminder
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(entity: Reminder): Long

@@ -1,20 +1,16 @@
 package com.example.mchomework.notification
 
-import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.compose.material.contentColorFor
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import com.example.mchomework.Graph
 import com.example.mchomework.MainActivity
 import com.example.mchomework.R
-import java.security.Policy
 import java.util.concurrent.TimeUnit
 
 
@@ -92,6 +88,26 @@ fun setRepeatingNotificationAtTime(
     val notificationWorkRequest: PeriodicWorkRequest =
         PeriodicWorkRequestBuilder<NotificationWorker>(repeatPeriod, TimeUnit.DAYS)
             .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+            .setInputData(data)
+            .build()
+
+    WorkManager
+        .getInstance(Graph.appContext)
+        .enqueueUniquePeriodicWork(
+            "reminder_$id",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            notificationWorkRequest
+        )
+}
+
+fun setNotificationAtPlace(
+    message: String,
+    id: Int,
+) {
+    val data = workDataOf("msg" to message, "id" to id)
+    val notificationWorkRequest: PeriodicWorkRequest =
+        PeriodicWorkRequestBuilder<NotificationWorker>(5, TimeUnit.MINUTES)
+            .setInitialDelay(0, TimeUnit.MILLISECONDS)
             .setInputData(data)
             .build()
 
