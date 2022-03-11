@@ -11,10 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mchomework.Graph
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.data.repository.ReminderRepository
-import com.example.mchomework.notification.createNotificationChannel
-import com.example.mchomework.notification.deleteNotification
-import com.example.mchomework.notification.setNotificationAtTime
-import com.example.mchomework.notification.setRepeatingNotificationAtTime
+import com.example.mchomework.notification.*
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.*
@@ -37,11 +34,17 @@ class ReminderViewModel(
 
         if (reminder.notify) {
             when {
+                reminder.reminder_time == (-1).toLong() -> {
+                    setNotificationAtPlace(
+                        message = reminder.message,
+                        id = ret.toInt()
+                    )
+                }
                 reminder.daily -> {
                     setRepeatingNotificationAtTime(
                         delay = reminder.reminder_time - Date().time,
                         message = reminder.message,
-                        id = reminder.id,
+                        id = ret.toInt(),
                         repeatPeriod = 1
                     )
                 }
@@ -49,7 +52,7 @@ class ReminderViewModel(
                     setRepeatingNotificationAtTime(
                         delay = reminder.reminder_time - Date().time,
                         message = reminder.message,
-                        id = reminder.id,
+                        id = ret.toInt(),
                         repeatPeriod = 7
                     )
                 }
@@ -57,7 +60,7 @@ class ReminderViewModel(
                     setNotificationAtTime(
                         delay = reminder.reminder_time - Date().time,
                         message = reminder.message,
-                        id = reminder.id
+                        id = ret.toInt()
                     )
                 }
             }
@@ -73,6 +76,12 @@ class ReminderViewModel(
         reminderRepository.updateReminder(reminder)
         if (reminder.notify) {
             when {
+                reminder.reminder_time == (-1).toLong() -> {
+                    setNotificationAtPlace(
+                        message = reminder.message,
+                        id = reminder.id
+                    )
+                }
                 reminder.daily -> {
                     setRepeatingNotificationAtTime(
                         delay = reminder.reminder_time - Date().time,

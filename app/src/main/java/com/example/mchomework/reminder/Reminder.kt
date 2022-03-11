@@ -271,7 +271,12 @@ fun Reminder(
 }
 
 fun dateToLong( h: String, m: String, d: String, M: String, y: String): Long {
-    val format = SimpleDateFormat("hh:mm dd.MM.yyyy", Locale("finnish"))
-    val dateString = "$h:$m $d.$M.$y"
-    return format.parse(dateString).time
+    return if (h == "" || m == "" || d == "" || M == "" || y == "") {
+        -1
+    }
+    else {
+        val format = SimpleDateFormat("hh:mm dd.MM.yyyy", Locale("finnish"))
+        val dateString = "$h:$m $d.$M.$y"
+        format.parse(dateString).time
+    }
 }
