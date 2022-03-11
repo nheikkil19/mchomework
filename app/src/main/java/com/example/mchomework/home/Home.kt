@@ -7,9 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,25 +17,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.mchomework.R
 import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.reminder.ReminderViewModel
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.android.gms.location.FusedLocationProviderClient
-import kotlinx.coroutines.NonDisposableHandle.parent
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @Composable
 fun Home(
     navController: NavController,
     sharedPref: SharedPreferences,
-    fusedLocationClient: FusedLocationProviderClient
+    fusedLocationClient: FusedLocationProviderClient,
+    location: LatLng?
 ) {
-    val viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient)
+    val viewModel: ReminderViewModel = ReminderViewModel(
+        fusedLocationClient = fusedLocationClient,
+        location = location
+    )
     val viewState by viewModel.state.collectAsState()
 
     Surface() {
@@ -83,13 +85,15 @@ fun topBar(
     sharedPref: SharedPreferences,
     viewModel: ReminderViewModel
 ) {
+//    viewModel.state.value.location =
     TopAppBar(
         modifier = Modifier.fillMaxWidth()
     ) {
-        ConstraintLayout(
+        Row(
             modifier = Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(2.dp)
         ) {
-            val (logout, hide) = createRefs()
             // Logout button
             Button(
                 onClick = {
@@ -98,24 +102,46 @@ fun topBar(
                         sharedPref = sharedPref
                     )
                 },
-                modifier = Modifier.wrapContentWidth()
-                    .constrainAs(logout) {
-                        top.linkTo(parent.top, margin = 2.dp)
-                        start.linkTo(parent.start, margin = 2.dp)
-                        bottom.linkTo(parent.bottom, margin = 2.dp)
-                    }
+                modifier = Modifier
+                    .weight(40F)
+                    .fillMaxHeight()
+                    .padding(2.dp)
             ) {
                 Text(text = stringResource(R.string.logOut))
+            }
+            // Virtual location
+            Button(
+                onClick = { navController.navigate("map") },
+                modifier = Modifier
+                    .weight(20F)
+                    .fillMaxHeight()
+                    .padding(2.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = stringResource(R.string.virtualLocation)
+                )
+            }
+            // Real location
+            Button(
+                onClick = { viewModel.getRealLocation() },
+                modifier = Modifier
+                    .weight(20F)
+                    .fillMaxHeight()
+                    .padding(2.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = stringResource(R.string.virtualLocation)
+                )
             }
             // HideButton
             Button(
                 onClick = { viewModel.hide() },
-                modifier = Modifier.wrapContentWidth()
-                    .constrainAs(hide) {
-                        top.linkTo(parent.top, margin = 2.dp)
-                        end.linkTo(parent.end, margin = 2.dp)
-                        bottom.linkTo(parent.bottom, margin = 2.dp)
-                    }
+                modifier = Modifier
+                    .weight(20F)
+                    .fillMaxHeight()
+                    .padding(2.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.List,

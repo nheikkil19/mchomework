@@ -51,7 +51,7 @@ fun ReminderApp(
     val appState = rememberReminderAppState()
     val startDest = if (sharedPref.getBoolean("loggedIn", false)) "home"
     else "login"
-    var markerPosition: LatLng? = null
+    var position: LatLng? = null
 
     NavHost(
         navController = appState.navController,
@@ -62,15 +62,16 @@ fun ReminderApp(
             Home(
                 navController = appState.navController,
                 sharedPref = sharedPref,
-                fusedLocationClient = fusedLocationClient
+                fusedLocationClient = fusedLocationClient,
+                location = position
             )
-            markerPosition = null
+//            position = null
         }
         composable(route = "addReminder") {
             Reminder(
                 navController = appState.navController,
                 edit = false,
-                markerPosition = markerPosition,
+                markerPosition = position,
                 fusedLocationClient = fusedLocationClient
             )
         }
@@ -84,12 +85,12 @@ fun ReminderApp(
                 navController = appState.navController,
                 edit = true,
                 reminderId = it.arguments?.getInt("id"),
-                markerPosition = markerPosition,
+                markerPosition = position,
                 fusedLocationClient = fusedLocationClient
             )
         }
         composable(route = "map") {
-            markerPosition = MyMap(
+            position = MyMap(
                 navController = appState.navController,
                 fusedLocationClient = fusedLocationClient
             )

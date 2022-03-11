@@ -26,7 +26,7 @@ fun Reminder(
     navController: NavController,
     edit: Boolean,
     fusedLocationClient: FusedLocationProviderClient,
-    viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient),
+    viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient, location = null),
     reminderId: Int? = 0,
     markerPosition: LatLng? = null
 ) {

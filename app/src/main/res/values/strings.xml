@@ -20,4 +20,5 @@
     <string name="notification">Notification</string>
     <string name="repeatDaily">Repeat daily</string>
     <string name="repeatWeekly">Repeat weekly</string>
+    <string name="virtualLocation">Virtual location</string>
 </resources>

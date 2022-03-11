@@ -1,10 +1,8 @@
 package com.example.mchomework.reminder
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,18 +11,18 @@ import com.example.mchomework.data.entity.Reminder
 import com.example.mchomework.data.repository.ReminderRepository
 import com.example.mchomework.notification.*
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.lang.Thread.sleep
 import java.util.*
 
 class ReminderViewModel(
     val fusedLocationClient: FusedLocationProviderClient,
-    private val reminderRepository: ReminderRepository = Graph.reminderRepository
+    private val reminderRepository: ReminderRepository = Graph.reminderRepository,
+    location: LatLng?
 ): ViewModel() {
-    private val _state = MutableStateFlow(ReminderViewState())
+    private val _state = MutableStateFlow(ReminderViewState(location = location))
 
     val state: StateFlow<ReminderViewState>
         get() = _state
@@ -68,7 +66,7 @@ class ReminderViewModel(
         return ret
     }
 
-    suspend fun getReminder(id: Int): Reminder? {
+    suspend fun getReminder(id: Int): Reminder {
         return reminderRepository.getReminder(id)
     }
 
@@ -122,53 +120,81 @@ class ReminderViewModel(
     }
 
     private fun getUnhidden() {
-        var myLocation: Location?
-        if (ActivityCompat.checkSelfPermission(
-                Graph.appContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                Graph.appContext,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
+        // show reminders in virtual location
+        if (state.value.hidden && state.value.location != null) {
+            viewModelScope.launch {
+                reminderRepository.getRemindersBefore(
+                    state.value.location!!.longitude,
+                    state.value.location!!.latitude
+                ).collect { list ->
+                    _state.value = ReminderViewState(
+                        reminders = list,
+                        hidden = true,
+                        location = _state.value.location
+                    )
+                }
+            }
         }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location : Location? ->
-                // Got last known location. In some rare situations this can be null.
-                myLocation = location
-                Log.d("tag", "hello2 $myLocation")
-                if (state.value.hidden) {
-                    viewModelScope.launch {
-                        reminderRepository.getRemindersBefore(
-                            myLocation?.longitude ?: 0.0,
-                            myLocation?.latitude ?: 0.0
-                        ).collect { list ->
-                            _state.value = ReminderViewState(
-                                reminders = list,
-                                hidden = false
-                            )
+        // show reminders in real location and not hidden
+        else {
+            var myLocation: Location?
+            if (ActivityCompat.checkSelfPermission(
+                    Graph.appContext,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    Graph.appContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
+            }
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location : Location? ->
+                    // Got last known location. In some rare situations this can be null.
+                    myLocation = location
+                    if (state.value.hidden) {
+                        viewModelScope.launch {
+                            reminderRepository.getRemindersBefore(
+                                myLocation?.longitude ?: 0.0,
+                                myLocation?.latitude ?: 0.0
+                            ).collect { list ->
+                                _state.value = ReminderViewState(
+                                    reminders = list,
+                                    hidden = false,
+                                    location = _state.value.location
+                                )
+                            }
                         }
-                    }
-                } else {
-                    viewModelScope.launch {
-                        reminderRepository.getReminders().collect { list ->
-                            _state.value = ReminderViewState(
-                                reminders = list,
-                                hidden = true
-                            )
+                    } else {
+                        viewModelScope.launch {
+                            reminderRepository.getReminders().collect { list ->
+                                _state.value = ReminderViewState(
+                                    reminders = list,
+                                    hidden = true,
+                                    location = _state.value.location
+                                )
+                            }
                         }
                     }
                 }
-            }
+        }
     }
+    fun getRealLocation() {
+        _state.value = ReminderViewState(
+            reminders = _state.value.reminders,
+            hidden = _state.value.hidden,
+            location = null
+        )
+        getUnhidden()
+    }
+
 
     init {
         createNotificationChannel()
@@ -178,5 +204,6 @@ class ReminderViewModel(
 
 data class ReminderViewState(
     val reminders: List<Reminder> = emptyList(),
-    val hidden: Boolean = true
+    val hidden: Boolean = true,
+    val location: LatLng?
 )
