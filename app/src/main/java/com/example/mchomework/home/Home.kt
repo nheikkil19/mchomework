@@ -1,6 +1,7 @@
 package com.example.mchomework.home
 
 import android.content.SharedPreferences
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,7 +35,8 @@ fun Home(
     navController: NavController,
     sharedPref: SharedPreferences,
     fusedLocationClient: FusedLocationProviderClient,
-    location: LatLng?
+    location: LatLng?,
+    tts: TextToSpeech
 ) {
     val viewModel: ReminderViewModel = ReminderViewModel(
         fusedLocationClient = fusedLocationClient,
@@ -72,7 +74,8 @@ fun Home(
                 reminderList(
                     list = viewState.reminders,
                     navController = navController,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    tts = tts
                 )
             }
         }
@@ -85,7 +88,6 @@ fun topBar(
     sharedPref: SharedPreferences,
     viewModel: ReminderViewModel
 ) {
-//    viewModel.state.value.location =
     TopAppBar(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -156,14 +158,16 @@ fun topBar(
 fun reminderList(
     list: List<Reminder>,
     navController: NavController,
-    viewModel: ReminderViewModel
+    viewModel: ReminderViewModel,
+    tts: TextToSpeech
 ) {
     LazyColumn {
         items(list) { item ->
             ReminderItem(
                 reminder = item,
                 navController = navController,
-                viewModel = viewModel
+                viewModel = viewModel,
+                tts = tts
             )
         }
     }
@@ -173,14 +177,15 @@ fun reminderList(
 private fun ReminderItem(
     reminder: Reminder,
     navController: NavController,
-    viewModel: ReminderViewModel
+    viewModel: ReminderViewModel,
+    tts: TextToSpeech
 ) {
     ConstraintLayout(
         modifier = Modifier.clickable {
             navController.navigate("editReminder${reminder.id}")
         }
     ) {
-        val (divider, reminderTitle, reminderTime, delButton) = createRefs()
+        val (divider, reminderTitle, reminderTime, speech, delButton) = createRefs()
         Divider(
             Modifier.constrainAs(divider) {
                 top.linkTo(parent.top)
@@ -206,6 +211,16 @@ private fun ReminderItem(
                 start.linkTo(parent.start, 10.dp)
             }
         )
+        Button(
+                onClick = { textToSpeech(reminder, tts) },
+        modifier = Modifier.constrainAs(speech) {
+            top.linkTo(parent.top, 10.dp)
+            bottom.linkTo(parent.bottom, 10.dp)
+            end.linkTo(delButton.start, 10.dp)
+        }
+        ) {
+        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
+    }
         Button(
             onClick = { runBlocking { viewModel.deleteReminder(reminder)
             } },
@@ -233,4 +248,13 @@ fun logOutClick(
 
 private fun Long.toDateString(): String {
     return SimpleDateFormat("hh:mm dd.MM.yyyy", Locale("finnish")).format(this)
+}
+
+
+private fun textToSpeech(reminder: Reminder, tts: TextToSpeech) {
+    val text = if (reminder.reminder_time!= (-1).toLong())
+        "You have a reminder '${reminder.message}' at ${reminder.reminder_time.toDateString()}"
+    else "You have a reminder '${reminder.message}'"
+
+    tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
 }

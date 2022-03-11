@@ -3,6 +3,11 @@
     package="com.example.mchomework">
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
     <application
         android:name=".ReminderApplication"
         android:allowBackup="true"
@@ -21,6 +26,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -34,6 +40,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCvTFkvty5Agm0qNjgCIeqA9nNK7J3V4_I"/>
+
     </application>
 
 </manifest>

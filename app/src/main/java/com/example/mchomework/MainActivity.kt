@@ -1,20 +1,15 @@
 package com.example.mchomework
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.os.Looper
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.core.app.ActivityCompat
 import androidx.navigation.NavType
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
@@ -26,17 +21,30 @@ import com.example.mchomework.reminder.Reminder
 import com.example.mchomework.ui.theme.MchomeworkTheme
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import java.util.*
 
 class MainActivity() : ComponentActivity() {
+
+    private val textToSpeechEngine: TextToSpeech by lazy {
+        TextToSpeech(
+            this,
+            TextToSpeech.OnInitListener { status ->
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeechEngine.language = Locale.UK
+                }
+            })
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         setContent {
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    ReminderApp(sharedPref, fusedLocationClient)
+                    ReminderApp(sharedPref, fusedLocationClient, textToSpeechEngine)
                 }
             }
         }
@@ -46,7 +54,8 @@ class MainActivity() : ComponentActivity() {
 @Composable
 fun ReminderApp(
     sharedPref: SharedPreferences,
-    fusedLocationClient: FusedLocationProviderClient
+    fusedLocationClient: FusedLocationProviderClient,
+    tts: TextToSpeech
 ) {
     val appState = rememberReminderAppState()
     val startDest = if (sharedPref.getBoolean("loggedIn", false)) "home"
@@ -63,7 +72,8 @@ fun ReminderApp(
                 navController = appState.navController,
                 sharedPref = sharedPref,
                 fusedLocationClient = fusedLocationClient,
-                location = position
+                location = position,
+                tts = tts
             )
 //            position = null
         }
@@ -102,14 +112,14 @@ fun ReminderApp(
 }
 
 
-class MyLocationCallback(): LocationCallback() {
-    override fun onLocationAvailability(p0: LocationAvailability) {
-        super.onLocationAvailability(p0)
-        Log.d("tag", "availability")
-    }
-
-    override fun onLocationResult(p0: LocationResult) {
-        super.onLocationResult(p0)
-        Log.d("tag", "result")
-    }
-}
+//class MyLocationCallback(): LocationCallback() {
+//    override fun onLocationAvailability(p0: LocationAvailability) {
+//        super.onLocationAvailability(p0)
+//        Log.d("tag", "availability")
+//    }
+//
+//    override fun onLocationResult(p0: LocationResult) {
+//        super.onLocationResult(p0)
+//        Log.d("tag", "result")
+//    }
+//}
