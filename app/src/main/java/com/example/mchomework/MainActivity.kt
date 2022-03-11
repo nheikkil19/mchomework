@@ -1,15 +1,24 @@
 package com.example.mchomework
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.app.Activity
+import android.content.*
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.os.Environment.getExternalStoragePublicDirectory
+import android.provider.MediaStore
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.navigation.NavType
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
@@ -17,10 +26,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.mchomework.home.Home
 import com.example.mchomework.map.MyMap
+import com.example.mchomework.profile.Profile
 import com.example.mchomework.reminder.Reminder
 import com.example.mchomework.ui.theme.MchomeworkTheme
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity() : ComponentActivity() {
@@ -35,6 +48,22 @@ class MainActivity() : ComponentActivity() {
             })
     }
 
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//            val imageBitmap = data?.extras?.get("data") as Bitmap
+//            val values = ContentValues().apply {
+//                put(MediaStore.MediaColumns.DISPLAY_NAME, "profilePicture")
+//            }
+//
+//
+//            val uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+//            val newUri = contentResolver.insert(uri, values)
+//                ?: throw IOException("Failed to save picture")
+//            contentResolver.openOutputStream(newUri)
+//        }
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
@@ -44,7 +73,7 @@ class MainActivity() : ComponentActivity() {
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    ReminderApp(sharedPref, fusedLocationClient, textToSpeechEngine)
+                    ReminderApp(sharedPref, fusedLocationClient, textToSpeechEngine, this)
                 }
             }
         }
@@ -55,10 +84,11 @@ class MainActivity() : ComponentActivity() {
 fun ReminderApp(
     sharedPref: SharedPreferences,
     fusedLocationClient: FusedLocationProviderClient,
-    tts: TextToSpeech
+    tts: TextToSpeech,
+    activity: Activity
 ) {
     val appState = rememberReminderAppState()
-    val startDest = if (sharedPref.getBoolean("loggedIn", false)) "home"
+    val startDest = if (sharedPref.getBoolean("loggedIn", false)) "profile"
     else "login"
     var position: LatLng? = null
 
@@ -105,21 +135,30 @@ fun ReminderApp(
                 fusedLocationClient = fusedLocationClient
             )
         }
+        composable(route = "profile") {
+            Profile(
+                navController = appState.navController,
+                activity = activity
+            )
+        }
         activity("login") {
             activityClass = LoginActivity::class
         }
+//        composable("camera") {
+//            dispatchTakePictureIntent(activity)
+//        }
     }
 }
 
-
-//class MyLocationCallback(): LocationCallback() {
-//    override fun onLocationAvailability(p0: LocationAvailability) {
-//        super.onLocationAvailability(p0)
-//        Log.d("tag", "availability")
-//    }
+//private fun dispatchTakePictureIntent(
+//    activity: Activity
+//) {
+//    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//    takePictureIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//    try {
+//        startActivityForResult(activity, takePictureIntent, 0, Bundle())
 //
-//    override fun onLocationResult(p0: LocationResult) {
-//        super.onLocationResult(p0)
-//        Log.d("tag", "result")
+//    } catch (e: ActivityNotFoundException) {
+//        // display error state to the user
 //    }
 //}
