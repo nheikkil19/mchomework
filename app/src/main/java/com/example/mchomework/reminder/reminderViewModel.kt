@@ -117,6 +117,7 @@ class ReminderViewModel(
 
     fun hide() {
         getUnhidden()
+        state.value.hidden = !state.value.hidden
     }
 
     private fun getUnhidden() {
@@ -129,7 +130,7 @@ class ReminderViewModel(
                 ).collect { list ->
                     _state.value = ReminderViewState(
                         reminders = list,
-                        hidden = true,
+                        hidden = _state.value.hidden,
                         location = _state.value.location
                     )
                 }
@@ -167,7 +168,7 @@ class ReminderViewModel(
                             ).collect { list ->
                                 _state.value = ReminderViewState(
                                     reminders = list,
-                                    hidden = false,
+                                    hidden = _state.value.hidden,
                                     location = _state.value.location
                                 )
                             }
@@ -177,7 +178,7 @@ class ReminderViewModel(
                             reminderRepository.getReminders().collect { list ->
                                 _state.value = ReminderViewState(
                                     reminders = list,
-                                    hidden = true,
+                                    hidden = _state.value.hidden,
                                     location = _state.value.location
                                 )
                             }
@@ -204,6 +205,6 @@ class ReminderViewModel(
 
 data class ReminderViewState(
     val reminders: List<Reminder> = emptyList(),
-    val hidden: Boolean = true,
+    var hidden: Boolean = true,
     val location: LatLng?
 )

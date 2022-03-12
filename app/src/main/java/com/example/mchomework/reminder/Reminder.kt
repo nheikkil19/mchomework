@@ -188,7 +188,7 @@ fun Reminder(
                     onCheckedChange = { bool -> location.value = bool }
                 )
                 Button(
-                    onClick = { navController.navigate("map") },
+                    onClick = { navController.navigate("selectMarker") },
                     modifier = Modifier.wrapContentSize(),
                     enabled = location.value
                 ) {

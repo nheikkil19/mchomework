@@ -22,4 +22,5 @@
     <string name="repeatWeekly">Repeat weekly</string>
     <string name="virtualLocation">Virtual location</string>
     <string name="profile">Profile</string>
+    <string name="realLocation">Real location</string>
 </resources>

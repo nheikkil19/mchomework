@@ -128,7 +128,7 @@ fun topBar(
             }
             // Virtual location
             Button(
-                onClick = { navController.navigate("map") },
+                onClick = { navController.navigate("selectLocation") },
                 modifier = Modifier
                     .weight(17F)
                     .fillMaxHeight()
@@ -149,7 +149,7 @@ fun topBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
-                    contentDescription = stringResource(R.string.virtualLocation)
+                    contentDescription = stringResource(R.string.realLocation)
                 )
             }
             // HideButton
@@ -218,7 +218,8 @@ private fun ReminderItem(
             }
         )
         Text(
-            text = reminder.reminder_time.toDateString(),
+            text = if (reminder.reminder_time == (-1).toLong()) "No time"
+            else reminder.reminder_time.toDateString(),
             maxLines = 1,
             modifier = Modifier.constrainAs(reminderTime) {
                 top.linkTo(reminderTitle.bottom, 10.dp)
