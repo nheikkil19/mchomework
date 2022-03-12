@@ -90,7 +90,6 @@ fun ReminderApp(
                 location = position,
                 tts = tts
             )
-//            position = null
         }
         composable(route = "addReminder") {
             Reminder(
@@ -117,7 +116,7 @@ fun ReminderApp(
         composable(route = "map") {
             position = MyMap(
                 navController = appState.navController,
-                fusedLocationClient = fusedLocationClient
+                fusedLocationClient = fusedLocationClient,
             )
         }
         composable(route = "profile") {
