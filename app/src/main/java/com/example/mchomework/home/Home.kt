@@ -105,17 +105,32 @@ fun topBar(
                     )
                 },
                 modifier = Modifier
-                    .weight(40F)
+                    .weight(32F)
                     .fillMaxHeight()
                     .padding(2.dp)
             ) {
                 Text(text = stringResource(R.string.logOut))
             }
+            // Profile
+            Button(
+                onClick = {
+                    navController.navigate("profile")
+                },
+                modifier = Modifier
+                    .weight(17F)
+                    .fillMaxHeight()
+                    .padding(2.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = stringResource(R.string.profile)
+                )
+            }
             // Virtual location
             Button(
                 onClick = { navController.navigate("map") },
                 modifier = Modifier
-                    .weight(20F)
+                    .weight(17F)
                     .fillMaxHeight()
                     .padding(2.dp)
             ) {
@@ -128,7 +143,7 @@ fun topBar(
             Button(
                 onClick = { viewModel.getRealLocation() },
                 modifier = Modifier
-                    .weight(20F)
+                    .weight(17F)
                     .fillMaxHeight()
                     .padding(2.dp)
             ) {
@@ -141,7 +156,7 @@ fun topBar(
             Button(
                 onClick = { viewModel.hide() },
                 modifier = Modifier
-                    .weight(20F)
+                    .weight(17F)
                     .fillMaxHeight()
                     .padding(2.dp)
             ) {

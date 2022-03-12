@@ -48,21 +48,6 @@ class MainActivity() : ComponentActivity() {
             })
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            val imageBitmap = data?.extras?.get("data") as Bitmap
-//            val values = ContentValues().apply {
-//                put(MediaStore.MediaColumns.DISPLAY_NAME, "profilePicture")
-//            }
-//
-//
-//            val uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
-//            val newUri = contentResolver.insert(uri, values)
-//                ?: throw IOException("Failed to save picture")
-//            contentResolver.openOutputStream(newUri)
-//        }
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +73,7 @@ fun ReminderApp(
     activity: Activity
 ) {
     val appState = rememberReminderAppState()
-    val startDest = if (sharedPref.getBoolean("loggedIn", false)) "profile"
+    val startDest = if (sharedPref.getBoolean("loggedIn", false)) "home"
     else "login"
     var position: LatLng? = null
 
@@ -144,21 +129,5 @@ fun ReminderApp(
         activity("login") {
             activityClass = LoginActivity::class
         }
-//        composable("camera") {
-//            dispatchTakePictureIntent(activity)
-//        }
     }
 }
-
-//private fun dispatchTakePictureIntent(
-//    activity: Activity
-//) {
-//    val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//    takePictureIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//    try {
-//        startActivityForResult(activity, takePictureIntent, 0, Bundle())
-//
-//    } catch (e: ActivityNotFoundException) {
-//        // display error state to the user
-//    }
-//}
