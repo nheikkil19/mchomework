@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.ImageView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -117,17 +118,9 @@ private fun dispatchTakePictureIntent(
             )
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
             startActivityForResult(activity, takePictureIntent, 1, Bundle())
-//            startActivityForResult(takePictureIntent, 1)
         }
     }
-//    }
-//    takePictureIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//    try {
-//        startActivityForResult(activity, takePictureIntent, 1, Bundle())
-//
-//    } catch (e: ActivityNotFoundException) {
-//        // display error state to the user
-//    }
+
 }
 
 private fun findFile(): String? {
@@ -141,6 +134,9 @@ private fun findFile(): String? {
     return list?.get(0)?.absolutePath
 }
 private fun deleteFile() {
-    val dir = File(findFile())
-    dir?.delete()
+    val file = findFile()
+    if (file != null) {
+        val dir = File(file)
+        dir?.delete()
+    }
 }

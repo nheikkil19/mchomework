@@ -1,6 +1,9 @@
 package com.example.mchomework.map
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.GnssAntennaInfo
 import android.location.GpsStatus
@@ -16,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import com.example.mchomework.Graph
+import com.example.mchomework.MainActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdate
@@ -37,6 +42,7 @@ import java.util.*
 fun MyMap(
     navController: NavController,
     fusedLocationClient: FusedLocationProviderClient,
+    activity: Activity
 ): LatLng? {
     val mapView = rememberMapViewWithLifecycle()
     val coroutineScope = rememberCoroutineScope()
@@ -71,11 +77,39 @@ fun MyMap(
                 map.setOnMapLongClickListener { latlng ->
                     position.value = latlng
                 }
-                @SuppressLint("MissingPermission")
+                if (ActivityCompat.checkSelfPermission(
+                        Graph.appContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        Graph.appContext,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    ActivityCompat.requestPermissions(
+                        activity,
+                        arrayOf(
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION),
+                        1)
+                }
                 map.isMyLocationEnabled = true
                 map.setOnMyLocationButtonClickListener {
 
-                    @SuppressLint("MissingPermission")
+                    if (ActivityCompat.checkSelfPermission(
+                            Graph.appContext,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            Graph.appContext,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            activity,
+                            arrayOf(
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.ACCESS_FINE_LOCATION),
+                            1)
+                    }
                     val lastLocation = fusedLocationClient.lastLocation
                     while (!lastLocation.isComplete) {
                     }
@@ -90,4 +124,8 @@ fun MyMap(
         }
     }
     return position.value
+}
+
+fun requestPermissions(activity: Activity) {
+
 }

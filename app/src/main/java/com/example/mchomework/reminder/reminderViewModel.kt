@@ -1,6 +1,7 @@
 package com.example.mchomework.reminder
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.core.app.ActivityCompat
@@ -20,6 +21,7 @@ import java.util.*
 class ReminderViewModel(
     val fusedLocationClient: FusedLocationProviderClient,
     private val reminderRepository: ReminderRepository = Graph.reminderRepository,
+    private val activity: Activity,
     location: LatLng?
 ): ViewModel() {
     private val _state = MutableStateFlow(ReminderViewState(location = location))
@@ -147,14 +149,12 @@ class ReminderViewModel(
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION),
+                    1)
             }
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->

@@ -21,8 +21,8 @@ class LoginActivity(): ComponentActivity() {
         super.onCreate(savedInstanceState)
         val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
-            putString("username", "") //user
-            putString("password", "") //pass
+            putString("username", "user") //user
+            putString("password", "pass") //pass
             apply()
         }
         setContent {

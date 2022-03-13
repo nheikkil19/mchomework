@@ -1,6 +1,7 @@
 package com.example.mchomework.reminder
 
 
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -26,7 +27,11 @@ fun Reminder(
     navController: NavController,
     edit: Boolean,
     fusedLocationClient: FusedLocationProviderClient,
-    viewModel: ReminderViewModel = ReminderViewModel(fusedLocationClient, location = null),
+    activity: Activity,
+    viewModel: ReminderViewModel = ReminderViewModel(
+        fusedLocationClient = fusedLocationClient,
+        location = null,
+        activity = activity),
     reminderId: Int? = 0,
     markerPosition: LatLng? = null
 ) {

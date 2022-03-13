@@ -1,7 +1,9 @@
 package com.example.mchomework
 
+import android.Manifest
 import android.app.Activity
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -54,6 +56,22 @@ class MainActivity() : ComponentActivity() {
         val sharedPref = getSharedPreferences("login", Context.MODE_PRIVATE)
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        if (ActivityCompat.checkSelfPermission(
+                Graph.appContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                Graph.appContext,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION),
+                1)
+        }
+
         setContent {
             MchomeworkTheme {
                 // A surface container using the 'background' color from the theme
@@ -89,7 +107,8 @@ fun ReminderApp(
                 sharedPref = sharedPref,
                 fusedLocationClient = fusedLocationClient,
                 location = location,
-                tts = tts
+                tts = tts,
+                activity = activity
             )
         }
         composable(route = "addReminder") {
@@ -97,7 +116,8 @@ fun ReminderApp(
                 navController = appState.navController,
                 edit = false,
                 markerPosition = markerPosition,
-                fusedLocationClient = fusedLocationClient
+                fusedLocationClient = fusedLocationClient,
+                activity = activity
             )
         }
         composable(route = "editReminder{id}",
@@ -111,19 +131,22 @@ fun ReminderApp(
                 edit = true,
                 reminderId = it.arguments?.getInt("id"),
                 markerPosition = markerPosition,
-                fusedLocationClient = fusedLocationClient
+                fusedLocationClient = fusedLocationClient,
+                activity = activity
             )
         }
         composable(route = "selectLocation") {
             location = MyMap(
                 navController = appState.navController,
                 fusedLocationClient = fusedLocationClient,
+                activity = activity
             )
         }
         composable(route = "selectMarker") {
             markerPosition = MyMap(
                 navController = appState.navController,
                 fusedLocationClient = fusedLocationClient,
+                activity = activity
             )
         }
         composable(route = "profile") {

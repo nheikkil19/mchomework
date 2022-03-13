@@ -1,5 +1,6 @@
 package com.example.mchomework.home
 
+import android.app.Activity
 import android.content.SharedPreferences
 import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.clickable
@@ -36,11 +37,13 @@ fun Home(
     sharedPref: SharedPreferences,
     fusedLocationClient: FusedLocationProviderClient,
     location: LatLng?,
-    tts: TextToSpeech
+    tts: TextToSpeech,
+    activity: Activity
 ) {
     val viewModel: ReminderViewModel = ReminderViewModel(
         fusedLocationClient = fusedLocationClient,
-        location = location
+        location = location,
+        activity = activity
     )
     val viewState by viewModel.state.collectAsState()
 
