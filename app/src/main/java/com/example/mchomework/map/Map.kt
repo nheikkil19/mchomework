@@ -64,7 +64,7 @@ fun MyMap(
                 Log.d("tag", "hei")
                 val color = Color.HSVToColor(50, floatArrayOf(265F, 87F, 98F))
                 val options = CircleOptions()
-                    .radius(50.0)
+                    .radius(100.0)
                     .fillColor(color)
                     .strokeColor(color)
 
